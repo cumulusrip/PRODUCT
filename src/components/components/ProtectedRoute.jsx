@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-
+import {Loader} from "lucide-react";
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("userToken");
   const userRole = localStorage.getItem("user_name");
@@ -50,18 +50,21 @@ const ProtectedRoute = ({ children }) => {
   }, [token, userData, userRole]);
 
   if (isValid === null) {
-    console.log("⏳ Token validation in progress...");
-    return <div>Loading...</div>; // Optional: replace with spinner
+    // console.log("⏳ Token validation in progress...");
+    return  <div className="flex justify-center items-center gap-3  ">
+                <Loader className="animate-spin text-black w-10 h-10" />
+                <p className="text-black text-lg font-medium">loading...</p>
+              </div>; 
   }
 
 if (!isValid) {
-  console.log("🔁 Redirecting to /login due to invalid token.");
+  // console.log("🔁 Redirecting to /login due to invalid token.");
   localStorage.clear(); 
   return <Navigate to="/login" replace />;
 }
 
 
-  console.log("🔓 Access granted. Rendering protected content.");
+  // console.log("🔓 Access granted. Rendering protected content.");
   return children;
 };
 

@@ -41,24 +41,18 @@ export default function Emptask() {
       <SectionHeader icon={BarChart} title="Project details" subtitle="Track and manage your projects details efficiently with our intuitive dashboard." />
       <div className="flex items-center justify-center relative">
       <div className="w-full bg-white shadow-md rounded-3xl p-4">
-        {empTasks.project && (
-          <div className="mb-8 top-heading-bg rounded-lg shadow-md ">
-            <p className="text-2xl font-bold text-gray-900 text-white">Project name : {empTasks.project.name}</p>
-
-            <p className="text-lg text-gray-700 text-white">
-              <strong>Deadline:</strong> {empTasks.project.deadline}
-            </p>
-            <p className="text-lg text-gray-700 text-white">
-              <strong>Total Hours:</strong> {empTasks.project.total_hours}
-            </p>
-            <p className="text-lg text-gray-700 text-white">
-              <strong>Assigned By:</strong> {empTasks.project_manager.name}
-            </p>
-              {/* <p className="text-lg text-gray-700 text-white">
-              <strong>Assigned By:</strong> {empTasks.project_manager.name}
-            </p> */}
-          </div>
-        )}
+      {empTasks.project && (
+      <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          {empTasks.project.name || "No Task Assigned"}
+        </h2>
+        <div className="text-gray-700 space-y-1">
+          <p><strong>Deadline:</strong> {empTasks.project.deadline || "—"}</p>
+          <p><strong>Total Hours:</strong> {empTasks.project.total_hours || 0}</p>
+          <p><strong>Assigned By:</strong> {empTasks.project_manager.name || "—"}</p>
+        </div>
+      </div>
+    )}
 
         <h2 className="text-2xl font-bold text-blue-800 mb-6">Project Tasks</h2>
         <div className="relative border-l-4 border-blue-500 ml-9 space-y-4">

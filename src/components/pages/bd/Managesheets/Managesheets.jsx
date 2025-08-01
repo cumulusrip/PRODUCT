@@ -155,6 +155,49 @@ useEffect(() => {
 
 
 
+const normalize = (text) =>
+  (text || "").toLowerCase().trim().replace(/[^a-z]/g, "");
+
+const getMinutes = (time) => {
+  if (!time || typeof time !== "string" || !time.includes(":")) return 0;
+  const [h, m] = time.split(":").map((n) => parseInt(n, 10) || 0);
+  return h * 60 + m;
+};
+
+const formatTime = (minutes) => {
+  if (!minutes || isNaN(minutes)) return "00:00";
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+};
+
+const getCategoryTime = (category) => {
+  const keyword = normalize(category);
+  const minutes = filteredData.reduce((total, sheet) => {
+    if (normalize(sheet.activity_type) === keyword) {
+      return total + getMinutes(sheet.time);
+    }
+    return total;
+  }, 0);
+  return formatTime(minutes);
+};
+
+const getNoWorkTime = () => {
+  const minutes = filteredData.reduce((total, sheet) => {
+    if (!normalize(sheet.activity_type)) {
+      return total + getMinutes(sheet.time);
+    }
+    return total;
+  }, 0);
+  return formatTime(minutes);
+};
+
+const getTotalTime = () => {
+  const minutes = filteredData.reduce((total, sheet) => {
+    return total + getMinutes(sheet.time);
+  }, 0);
+  return formatTime(minutes);
+};
 
 
 
@@ -375,8 +418,36 @@ const totalPages = Math.ceil(
 />
           {/* <ImportButton onClick={() => alert("Handle import logic here")} /> */}
           {/* <ImportButton /> */}
+
+
         </div>
-      </div>
+<div className="bg-green-50 border border-green-200 px-2 py-1 rounded shadow">
+  <div className="text-sm font-semibold text-green-800">{getCategoryTime("billable")}</div>
+  <div className="text-xs text-green-600">Billable</div>
+</div>
+
+<div className="bg-yellow-50 border border-yellow-200 px-2 py-1 rounded shadow">
+  <div className="text-sm font-semibold text-yellow-800">{getCategoryTime("non billable")}</div>
+  <div className="text-xs text-yellow-600">Non-Billable</div>
+</div>
+
+<div className="bg-blue-50 border border-blue-200 px-2 py-1 rounded shadow">
+  <div className="text-sm font-semibold text-blue-800">{getCategoryTime("in house")}</div>
+  <div className="text-xs text-blue-600">In-House</div>
+</div>
+
+<div className="bg-gray-100 border border-gray-300 px-2 py-1 rounded shadow">
+  <div className="text-sm font-semibold text-gray-700">{getNoWorkTime()}</div>
+  <div className="text-xs text-gray-600">No Work</div>
+</div>
+
+<div className="bg-indigo-50 border border-indigo-200 px-2 py-1 rounded shadow col-span-2 md:col-span-1">
+  <div className="text-sm font-semibold text-indigo-800">{getTotalTime()}</div>
+  <div className="text-xs text-indigo-600">Total Hours</div>
+</div>
+
+</div>   
+  
 
 
       {selectedRows.length > 0 && (
@@ -443,7 +514,7 @@ const totalPages = Math.ceil(
                       </div>
                       <span className="text-gray-600 text-lg font-medium">Loading your performance data...</span>
                       <p className="text-gray-400">Please wait while we fetch your records</p>
-                    </div>
+                    </div>F
                   </td>
                 </tr>
               ) : (

@@ -16,9 +16,11 @@ import {
   Pencil,
   Trash2,
   Edit,
+  
 } from "lucide-react";
 import { SectionHeader } from "../../../components/SectionHeader";
 import { useAlert } from "../../../context/AlertContext";
+import { ClearButton, CancelButton } from "../../../AllButtons/AllButtons";
 
 export const EmpSheetHistory = () => {
   const { userProjects, error, editPerformanceSheet, performanceSheets, loading, fetchPerformanceSheets } = useUserContext();
@@ -30,9 +32,22 @@ export const EmpSheetHistory = () => {
   const [editingRow, setEditingRow] = useState(null);
   const [editedData, setEditedData] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filterBy, setFilterBy] = useState("project_name");
+      const [isCustomMode, setIsCustomMode] = useState(false);
+    
   const [tags, setTags] = useState([]);
   const { showAlert } = useAlert();
   const recordsPerPage = 11;
+
+
+    const clearFilter = () => {
+    setSearchQuery("");
+    setFilterBy("project_name");
+    setIsCustomMode(false);
+    setStartDate("");
+    setEndDate("");
+  };
 
   // Effect to set initial tags when userProjects are loaded, or when entering edit mode
   useEffect(() => {
@@ -192,15 +207,29 @@ export const EmpSheetHistory = () => {
   };
   // --- End of fix for toLowerCase error ---
 
-  const filteredSheets = sheets.filter((sheet) => {
-    const sheetDate = new Date(sheet.date);
-    const start = startDate ? new Date(startDate) : null;
-    const end = endDate ? new Date(endDate) : null;
+const filteredSheets = sheets.filter((sheet) => {
+  const sheetDate = new Date(sheet.date);
+  const start = startDate ? new Date(startDate) : null;
+  const end = endDate ? new Date(endDate) : null;
 
-    return (
-      (!start || sheetDate >= start) && (!end || sheetDate <= end)
-    );
-  });
+  const matchesDate =
+    (!start || sheetDate >= start) && (!end || sheetDate <= end);
+
+  const matchesSearch = () => {
+    const value = searchQuery.toLowerCase();
+    if (filterBy === "project_name") {
+      return sheet.project_name?.toLowerCase().includes(value);
+    } else if (filterBy === "client_name") {
+      return sheet.client_name?.toLowerCase().includes(value);
+    } else if (filterBy === "date") {
+      return sheet.date?.includes(value);
+    }
+    return true;
+  };
+
+  return matchesDate && matchesSearch();
+});
+
 
   const totalPages = Math.ceil(filteredSheets.length / recordsPerPage);
 
@@ -217,6 +246,63 @@ export const EmpSheetHistory = () => {
     }
   };
 
+// const getCategoryCount = (category) => {
+//   const keyword = category.toLowerCase();
+//   return filteredSheets.filter(sheet =>
+//     (sheet.activity_type || "").toLowerCase() === keyword
+//   ).length;
+// };
+
+// const getNoWorkCount = () => {
+//   return filteredSheets.filter(sheet => !sheet.activity_type).length;
+// };
+// Normalize helper
+const normalize = (text) =>
+  (text || "").toLowerCase().trim().replace(/[^a-z]/g, "");
+
+const getMinutes = (time) => {
+  if (!time || typeof time !== "string" || !time.includes(":")) return 0;
+  const [h, m] = time.split(":").map((n) => parseInt(n, 10) || 0);
+  return h * 60 + m;
+};
+
+const formatTime = (minutes) => {
+  if (!minutes || isNaN(minutes)) return "00:00";
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+};
+
+const getCategoryTime = (category) => {
+  const keyword = normalize(category);
+  const minutes = filteredSheets.reduce((total, sheet) => {
+    if (normalize(sheet.activity_type) === keyword) {
+      return total + getMinutes(sheet.time);
+    }
+    return total;
+  }, 0);
+  return formatTime(minutes);
+};
+
+const getNoWorkTime = () => {
+  const minutes = filteredSheets.reduce((total, sheet) => {
+    if (!normalize(sheet.activity_type)) {
+      return total + getMinutes(sheet.time);
+    }
+    return total;
+  }, 0);
+  return formatTime(minutes);
+};
+
+const getTotalTime = () => {
+  const minutes = filteredSheets.reduce((total, sheet) => {
+    return total + getMinutes(sheet.time);
+  }, 0);
+  return formatTime(minutes);
+};
+
+
+
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl">
       <SectionHeader
@@ -224,42 +310,95 @@ export const EmpSheetHistory = () => {
         title="Performance History"
         subtitle="Track your professional journey, monitor progress, and review achievements across all your projects and activities."
       />
-      <div className="flex items-center justify-end gap-4 p-4">
-        <div className="flex items-center justify-between gap-3 flex-wrap md:flex-nowrap border p-2 px-3 rounded-lg shadow-md bg-white">
-          <div className="flex items-center gap-2">
-            <label htmlFor="startDate" className="font-bold text-black">
-              Start Date:
-            </label>
-            <input
-              type="date"
-              id="startDate"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="border px-2 py-1 rounded"
-            />
-          </div>
-          <div className="flex items-center gap-2">
-            <label htmlFor="endDate" className="font-bold text-black">
-              End Date:
-            </label>
-            <input
-              type="date"
-              id="endDate"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="border px-2 py-1 rounded"
-            />
-          </div>
-          <div className="hidden md:flex items-center gap-3">
-            <div className="top-tag-bg-color top-tag-size">
-              <div className="text-xl font-bold text-white leading-5">
-                {sheets.length}
-              </div>
-              <div className="text-blue-100">Total Records</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div className="flex items-center justify-end gap-4 p-4 w-full">
+ 
+
+           <div className="flex flex-wrap md:flex-nowrap items-center gap-3 border p-2 rounded-lg shadow-md bg-white">
+        
+                  <div className="flex items-center w-full border border-gray-300 px-2 rounded-lg focus-within:ring-2 focus-within:ring-blue-500">
+                    <Search className="h-5 w-5 text-gray-400 mr-[5px]" />
+                    <input
+                      type="text"
+                      className="w-full rounded-lg focus:outline-none py-2"
+                      placeholder={`Search by ${filterBy.replace("_", " ")}`}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+        
+                <select
+  value={filterBy}
+  onChange={(e) => {
+    setFilterBy(e.target.value);
+    setIsCustomMode(e.target.value === "date"); // fix here
+  }}
+  className="px-3 py-2 border rounded-md bg-white cursor-pointer focus:outline-none"
+>
+  <option value="project_name">Project Name</option>
+  <option value="client_name">Client Name</option>
+  <option value="date">Date</option> {/* fix here */}
+</select>
+
+        
+                  {isCustomMode && (
+                    <>
+                      <input
+                        type="date"
+                        className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        max={endDate || undefined}
+                      />
+                      <input
+                        type="date"
+                        className="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        min={startDate || undefined}
+                      />
+        
+                      <CancelButton onClick={clearFilter} />
+                    </>
+                  )}
+        
+                  <ClearButton onClick={clearFilter} />
+
+
+
+
+
+          
+
+                  
+                </div>
+             {/* <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-center text-sm font-medium text-gray-800"> */}
+<div className="bg-green-50 border border-green-200 px-2 py-1 rounded shadow">
+  <div className="text-sm font-semibold text-green-800">{getCategoryTime("billable")}</div>
+  <div className="text-xs text-green-600">Billable</div>
+</div>
+
+<div className="bg-yellow-50 border border-yellow-200 px-2 py-1 rounded shadow">
+  <div className="text-sm font-semibold text-yellow-800">{getCategoryTime("non billable")}</div>
+  <div className="text-xs text-yellow-600">Non-Billable</div>
+</div>
+
+<div className="bg-blue-50 border border-blue-200 px-2 py-1 rounded shadow">
+  <div className="text-sm font-semibold text-blue-800">{getCategoryTime("in house")}</div>
+  <div className="text-xs text-blue-600">In-House</div>
+</div>
+
+<div className="bg-gray-100 border border-gray-300 px-2 py-1 rounded shadow">
+  <div className="text-sm font-semibold text-gray-700">{getNoWorkTime()}</div>
+  <div className="text-xs text-gray-600">No Work</div>
+</div>
+
+<div className="bg-indigo-50 border border-indigo-200 px-2 py-1 rounded shadow col-span-2 md:col-span-1">
+  <div className="text-sm font-semibold text-indigo-800">{getTotalTime()}</div>
+  <div className="text-xs text-indigo-600">Total Hours</div>
+</div>
+
+</div>   
+      {/* </div> */}
 
       <div className="max-w-full overflow-x-auto">
         <div className="relative z-10">

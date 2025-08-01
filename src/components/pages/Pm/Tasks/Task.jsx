@@ -28,7 +28,7 @@ export default function TaskList( {show}) {
   const [editDeadline, setEditDeadline] = useState("");
   const [editHours, setEditHours] = useState("");
   const [editDescription, setEditDescription] = useState("");
-
+  const [editStatus, setEditStatus] = useState("");
   const { project_id } = useParams();
   // console.log("project_id izz", project_id);
 
@@ -108,6 +108,7 @@ export default function TaskList( {show}) {
     setEditDeadline(task.deadline);
     setEditHours(task.hours);
     setEditDescription(task.description);
+    setEditStatus(task.status);
   };
 
   const saveEdit = async (taskId) => {
@@ -117,6 +118,15 @@ export default function TaskList( {show}) {
     console.log("Saving task with editHours:", editHours);  //newStatus
     console.log("Project ID:",taskId);
     // console.log("Saving task with editHours:", newStatus); 
+    const originalTask = tasks.data.tasks.find(t => t.id === taskId);
+
+    const statusChanged = originalTask && originalTask.status !== editStatus;
+
+    if (statusChanged) {
+        console.log("Status has changed, updating status...");
+        await approveTask(taskId, editStatus);
+    }
+
     const updatedTask = {
       title: editTitle,
       description: editDescription,
@@ -134,6 +144,7 @@ export default function TaskList( {show}) {
     setEditDeadline("");
     setEditHours("");
     setEditDescription("");
+    setEditStatus("");
     fetchTasks();
   };
 
@@ -318,32 +329,32 @@ export default function TaskList( {show}) {
                               onClick={() => toggleStatusDropdown(task.id)}
                               className="px-4 py-2 bg-gray-200 rounded-lg shadow-md hover:bg-gray-300 transition-all whitespace-nowrap"
                             >
-                              {task.status}
+                              {editStatus}
                             </button>
 
                             {/* Dropdown for selecting status */}
                             {statusDropdown === task.id && (
                               <div className="absolute top-[50px] z-30 right-0 mt-2 w-36 bg-white border border-gray-300 rounded-lg shadow-lg">
                                 <button
-                                  onClick={() => updateStatus(task.id, "To do")}
+                                  onClick={() => setEditStatus("To do")}
                                   className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                 >
                                   To-Do
                                 </button>
                                 <button
-                                  onClick={() => updateStatus(task.id, "In Progress")}
+                                  onClick={() => setEditStatus("In Progress")}
                                   className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                 >
                                   In Progress
                                 </button>
                                 <button
-                                  onClick={() => updateStatus(task.id, "Completed")}
+                                  onClick={() => setEditStatus("Completed")}
                                   className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                 >
                                   Completed
                                 </button>
                                 <button
-                                  onClick={() => updateStatus(task.id, "Cancel")}
+                                  onClick={() => setEditStatus("Cancel")}
                                   className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                                 >
                                   Cancel

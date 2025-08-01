@@ -48,8 +48,8 @@ export const ProjectDetail = () => {
         });
 
         const data = await response.json();
-        // console.log('URL param project_id:', project_id);
-        // console.log('API response:123', data);
+        console.log('URL param project_id:', project_id);
+        console.log('API response:123', data);
 
         if (data.success) {
           const matchedProject = data.data.find(
@@ -58,7 +58,7 @@ export const ProjectDetail = () => {
           setProject(matchedProject || null);
         }
       } catch (error) {
-        // console.error('Error fetching project data:', error);
+        console.error('Error fetching project data:', error);
       } finally {
         setLoading(false);
       }
@@ -71,8 +71,14 @@ export const ProjectDetail = () => {
   if (!project) return <div className="text-center text-red-600 text-xl p-10">Project not found.</div>;
 
   const gototask = () => {
-  navigate(`/superadmin/projects/tasks/${project.project_id}`);
-};
+    const userRole = localStorage.getItem("user_name");
+
+    if (userRole === "billingmanager") {
+        navigate(`/billingmanager/projects/tasks/${project.project_id}`);
+    } else {
+        navigate(`/superadmin/projects/tasks/${project.project_id}`);
+    }
+  };
 
   return (
      <>

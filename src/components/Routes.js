@@ -211,6 +211,15 @@ const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname) && hasR
             element={<RoleBasedRoute element={<Assignedelement />} allowedRoles={["superadmin"]} />}
           />
 
+          <Route
+            path="/billingmanager/projects/tasks/:project_id"
+            element={
+              <TaskProvider>
+                <RoleBasedRoute element={<Task />} allowedRoles={["billingmanager"]} />
+              </TaskProvider>
+            }
+          />
+
  <Route
             path="/superadmin/projects/tasks/:project_id"
             element={
