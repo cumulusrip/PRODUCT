@@ -60,7 +60,6 @@ const PaginationControls = ({ totalPages, currentPage, handlePrevPage, handleNex
 export const TLAssignedtable = () => {
     const { assignedProjects, isLoading, fetchAssignedProjects } = useTLContext();
     const navigate = useNavigate();
-
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(6);
@@ -186,13 +185,24 @@ export const TLAssignedtable = () => {
                             </div>
                             <p className="text-lg font-bold text-gray-900">{project.total_working_hours || "N/A"}</p>
                         </div>
+                        <div className="p-3 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
+    <div className="flex items-center mb-2">
+        <Briefcase className="w-5 h-5 text-blue-500" />
+        <p className="text-sm font-medium text-gray-600 ml-2">Non-Billable Hours</p>
+    </div>
+    <p className="text-lg font-bold text-gray-900">
+        {project.total_working_hours - project.total_hours > 0
+            ? project.total_working_hours - project.total_hours
+            : "0"}
+    </p>
+</div>
                     </div>
 
                     {/* Requirements */}
-                    <div className="mb-6 p-4 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
+                    {/* <div className="mb-6 p-4 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
                         <p className="text-sm font-medium text-gray-600 mb-2">Requirements</p>
                         <p className="text-sm text-gray-700 line-clamp-2">{project.requirements || "N/A"}</p>
-                    </div>
+                    </div> */}
 
                     {/* Assignment Date */}
                     <div className="flex items-center justify-end pt-4 border-t border-gray-100">

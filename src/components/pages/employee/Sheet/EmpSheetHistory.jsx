@@ -275,7 +275,7 @@ const formatTime = (minutes) => {
 
 const getCategoryTime = (category) => {
   const keyword = normalize(category);
-  const minutes = filteredSheets.reduce((total, sheet) => {
+  const minutes = approvedData.reduce((total, sheet) => {
     if (normalize(sheet.activity_type) === keyword) {
       return total + getMinutes(sheet.time);
     }
@@ -284,8 +284,9 @@ const getCategoryTime = (category) => {
   return formatTime(minutes);
 };
 
+
 const getNoWorkTime = () => {
-  const minutes = filteredSheets.reduce((total, sheet) => {
+  const minutes = approvedData.reduce((total, sheet) => {
     if (!normalize(sheet.activity_type)) {
       return total + getMinutes(sheet.time);
     }
@@ -294,13 +295,18 @@ const getNoWorkTime = () => {
   return formatTime(minutes);
 };
 
+
 const getTotalTime = () => {
-  const minutes = filteredSheets.reduce((total, sheet) => {
+  const minutes = approvedData.reduce((total, sheet) => {
     return total + getMinutes(sheet.time);
   }, 0);
   return formatTime(minutes);
 };
 
+
+const approvedData = filteredSheets.filter(
+  (sheet) => normalize(sheet.status) === "approved"
+);
 
 
   return (

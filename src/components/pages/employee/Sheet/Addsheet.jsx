@@ -33,7 +33,10 @@ const Addsheet = () => {
   });
   
 
-  
+  const [showPopup, setShowPopup] = useState(false);
+const [confirmShortLeave, setConfirmShortLeave] = useState(false);
+// const [submitting, setSubmitting] = useState(false); // already present
+
 
   const [savedEntries, setSavedEntries] = useState([]);
 
@@ -239,6 +242,21 @@ console.log("neww enteries",newEntry);
   const handleSubmit = async () => {
     if (!savedEntries.length) return;
 
+     if (totalHours > 12) {
+    // alert("Total hours cannot exceed 12.");
+       showAlert({
+      variant: "warning",
+      title: "Warning",
+      message: "Total hours cannot exceed 12."
+    });
+    return;
+  }
+
+  if (totalHours < 8.5 && !confirmShortLeave) {
+    setShowPopup(true);
+    return;
+  }
+
     const formattedEntries = {
       data: savedEntries.map((entry) => ({
         project_id: entry.projectId,
@@ -282,6 +300,19 @@ useEffect(() => {
     console.log("No entries found in localStorage");
   }
 }, []);
+
+const parseHours = (timeStr) => {
+  const [hh, mm] = timeStr.split(':').map(Number);
+  return hh + mm / 60;
+};
+
+
+const totalHours = savedEntries.reduce((sum, entry) => {
+  if (!entry.hoursSpent) return sum;
+  return sum + parseHours(entry.hoursSpent);
+}, 0);
+
+
 
 
 
@@ -780,6 +811,50 @@ useEffect(() => {
                 </button>
               </div>
             )}
+            {showPopup && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center">
+    <div className="bg-white p-6 rounded shadow-md max-w-md w-full">
+      <h2 className="text-lg font-bold mb-4">Short Leave Confirmation</h2>
+      <p className="mb-4">
+        Your total hours are less than 8:30. The remaining hours will be considered as short leave.
+      </p>
+      <div className="flex items-center mb-4">
+        <input
+          type="checkbox"
+          id="confirmShortLeave"
+          checked={confirmShortLeave}
+          onChange={() => setConfirmShortLeave(!confirmShortLeave)}
+          className="mr-2"
+        />
+        <label htmlFor="confirmShortLeave" className="text-sm">
+          I understand and agree to submit with short leave
+        </label>
+      </div>
+      <div className="flex justify-end space-x-3">
+        <button
+          onClick={() => setShowPopup(false)}
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            if (!confirmShortLeave) return;
+            setShowPopup(false);
+            handleSubmit(); // Re-run submission now that checkbox is checked
+          }}
+          className={`px-4 py-2 rounded ${
+            confirmShortLeave ? "bg-blue-600 text-white hover:bg-blue-700" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+          disabled={!confirmShortLeave}
+        >
+          Submit Anyway
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
           </div>
         </div>
       </div>

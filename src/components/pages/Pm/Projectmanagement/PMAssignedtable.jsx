@@ -176,20 +176,24 @@ export const PMAssignedtable = () => {
                             </div>
                             <p className="text-base font-bold text-gray-900">{project.total_hours || "N/A"}</p>
                         </div>
-                        <div className="p-3 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300 flex items-center justify-between col-span-1 sm:col-span-2"> {/* Made this span full width */}
-                            <div className="flex items-center">
+                                               <div className="p-3 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
+                            <div className="flex items-center mb-2">
                                 <Briefcase className="w-5 h-5 text-blue-500" />
-                                <p className="text-sm font-medium text-gray-600 ml-2">Working Hours</p>
+                                <p className="text-sm font-medium text-gray-600 ml-2">Non-Billable Hours</p>
                             </div>
-                            <p className="text-base font-bold text-gray-900">{project.total_working_hours || "N/A"}</p>
+                            <p className="text-lg font-bold text-gray-900">
+                                {project.total_working_hours - project.total_hours > 0
+                                    ? project.total_working_hours - project.total_hours
+                                    : "0"}
+                            </p>
                         </div>
                     </div>
 
                     {/* Requirements */}
-                    <div className="mb-6 p-4 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
+                    {/* <div className="mb-6 p-4 bg-gray-50 rounded-lg group-hover:bg-blue-50 transition-colors duration-300">
                         <p className="text-sm font-medium text-gray-600 mb-2">Requirements</p>
                         <p className="text-sm text-gray-700 line-clamp-2">{project.requirements || "N/A"}</p>
-                    </div>
+                    </div> */}
 
                     {/* Assignment Date */}
                     <div className="flex items-center justify-end pt-4 border-t border-gray-100">

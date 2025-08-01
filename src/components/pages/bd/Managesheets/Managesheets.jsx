@@ -173,7 +173,7 @@ const formatTime = (minutes) => {
 
 const getCategoryTime = (category) => {
   const keyword = normalize(category);
-  const minutes = filteredData.reduce((total, sheet) => {
+  const minutes = approvedData.reduce((total, sheet) => {
     if (normalize(sheet.activity_type) === keyword) {
       return total + getMinutes(sheet.time);
     }
@@ -182,8 +182,9 @@ const getCategoryTime = (category) => {
   return formatTime(minutes);
 };
 
+
 const getNoWorkTime = () => {
-  const minutes = filteredData.reduce((total, sheet) => {
+  const minutes = approvedData.reduce((total, sheet) => {
     if (!normalize(sheet.activity_type)) {
       return total + getMinutes(sheet.time);
     }
@@ -192,12 +193,14 @@ const getNoWorkTime = () => {
   return formatTime(minutes);
 };
 
+
 const getTotalTime = () => {
-  const minutes = filteredData.reduce((total, sheet) => {
+  const minutes = approvedData.reduce((total, sheet) => {
     return total + getMinutes(sheet.time);
   }, 0);
   return formatTime(minutes);
 };
+
 
 
 
@@ -277,6 +280,9 @@ const totalPages = Math.ceil(
   ) / itemsPerPage
 );
 
+const approvedData = filteredData.filter(
+  (sheet) => normalize(sheet.status) === "approved"
+);
 
 
   return (
@@ -470,6 +476,8 @@ const totalPages = Math.ceil(
       )}
 
 
+
+
       <div className="max-w-full overflow-x-auto">
         <div className="min-w-[1102px]">
           <table className="w-full border-collapse">
@@ -521,13 +529,19 @@ const totalPages = Math.ceil(
                 paginatedData().map((sheet, index) => (
 
                   <tr key={index} className="hover:bg-blue-50/50 transition-all duration-200 ease-in-out">
-                    <td className="px-4 py-4 text-center">
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.includes(sheet.id)}
-                        onChange={() => handleRowSelect(sheet.id)}
-                      />
-                    </td>
+                          <td className="px-4 py-4 text-center">
+    {sheet.status?.toLowerCase() !== "rejected" ? (
+        <input
+            type="checkbox"
+            checked={selectedRows.includes(sheet.id)}
+            onChange={() => handleRowSelect(sheet.id)}
+        />
+    ) : (
+        // Render an empty cell if the status is "rejected"
+        // This keeps the table column structure correct
+        <span></span>
+    )}
+</td>
                     <td className="px-4 py-4 text-center text-gray-700 whitespace-nowrap">{sheet.date}</td>
                     <td className="px-4 py-4 text-center text-gray-700 whitespace-nowrap">{sheet.user_name}</td>
                     <td className="px-4 py-4 text-center text-gray-700 whitespace-nowrap">{sheet.client_name}</td>
@@ -637,18 +651,7 @@ const totalPages = Math.ceil(
     Rejected
   </span>
 </div>
-                          <button
-                            // onClick={() => toggleEditMode(sheet.id)}
-                            className="relative group hover:scale-110 transition"
-                          >
-                            <Pencil className="text-blue-600 h-6 w-6 hover:text-blue-700" />
-
-                            <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 
-                                            whitespace-nowrap bg-white text-black text-sm px-2 py-1 rounded 
-                                            opacity-0 group-hover:opacity-100 transition pointer-events-none shadow">
-                              Edit
-                            </span>
-                          </button>
+                          
                         </div>
                       ) : (
                         <div className="flex items-center gap-4">
