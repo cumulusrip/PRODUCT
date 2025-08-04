@@ -20,7 +20,12 @@ export const ProjectProvider = ({ children }) => {
     }
     return false;
   };
-  const addProject = async (clientId, projectName, tags_activitys) => {
+  const addProject = async (clientId, projectName, tags_activitys,projectType) => {
+    console.log("Adding project with data:", { clientId, projectName, tags_activitys, projectType });
+    if (!clientId || !projectName || !tags_activitys || !projectType) {
+      showAlert({ variant: "warning", title: "Missing Fields", message: "Please fill in all required fields." });
+      return;
+    }
     setIsLoading(true);
     setMessage("");
     const requestBody = {
@@ -28,9 +33,9 @@ export const ProjectProvider = ({ children }) => {
       client_id: parseInt(clientId),
       project_name: projectName,
       tags_activitys: tags_activitys,
+      project_type: projectType.trim(),
     };
-    // console.log("API URL:", `${API_URL}/api/projects`);
-    // console.log("Request Payload:", requestBody);
+
     try {
       const response = await fetch(`${API_URL}/api/projects`, {
         method: "POST",

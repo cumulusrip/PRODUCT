@@ -147,6 +147,7 @@ const handleSubmit = async () => {
   };
 
 
+
 const handleEditClick = async (client) => {
   setEditingClient(client.id);
   setEditedData({
@@ -274,7 +275,7 @@ const handleEditClick = async (client) => {
             {/* <option value="id">Hiring Platform</option> */}
              <option value="client_email">Contact Email</option>
               <option value="client_number">Contact Number</option>
-            <option value="project_type">Project Type</option> 
+            {/* <option value="project_type">Project Type</option>  */}
           </select>
 
 
@@ -314,9 +315,9 @@ const handleEditClick = async (client) => {
                     <th className="px-4 py-2 font-medium text-sm">Address</th>
                   </>
                 )}
-                <th className="px-4 py-2 font-medium text-sm text-center">Project type</th>
-                <th className="px-4 py-2 font-medium text-sm text-center">Communication</th>
-                <th className="px-4 py-2 font-medium text-sm text-center">Created At</th>
+                {/* <th className="px-4 py-2 font-medium text-sm text-center">Project type</th> */}
+                {/* <th className="px-4 py-2 font-medium text-sm text-center">COMMUNICATION</th> */}
+                <th className="px-4 py-2 font-medium text-sm text-center">communication</th>
                 <th className="px-4 py-2 font-medium text-sm text-center">Actions</th>
               </tr>
             </thead>
@@ -417,7 +418,7 @@ const handleEditClick = async (client) => {
                       </>
                     )}
 
-                    <td className="px-6 py-4 text-gray-600 text-sm text-center">
+                    {/* <td className="px-6 py-4 text-gray-600 text-sm text-center">
                       {editingClient === client.id ? (
                             <select
                               id="project_type"
@@ -434,7 +435,7 @@ const handleEditClick = async (client) => {
                              <span class="bg-yellow-100 text-yellow-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm ">{client.project_type}</span>:
                              <span class="bg-blue-100 text-blue-600 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm ">{client.project_type}</span>
                           )}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 text-gray-600 text-sm text-center">
                       {editingClient === client.id ? (
                             <input
@@ -448,10 +449,10 @@ const handleEditClick = async (client) => {
                           )}
                     </td>
 
-                    <td className="px-6 py-4 text-gray-600 text-sm text-center">
-                    {formatDate(client.created_at)}
-                      {/* {formatDatee(client.created_at).toLocaleDateString()} */}
-                    </td>
+                    {/* <td className="px-6 py-4 text-gray-600 text-sm text-center">
+                    {formatDate(client.created_at)} */}
+                       {/* {formatDatee(client.created_at).toLocaleDateString()}
+                    </td>  */}
 
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center space-x-2">

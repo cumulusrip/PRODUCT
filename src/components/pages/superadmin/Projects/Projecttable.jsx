@@ -32,7 +32,8 @@ export const Projecttable = () => {
   const [searchTagQuery, setSearchTagQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
     const [selectedFile, setSelectedFile] = useState(null); // <-- This was missing
-  
+  const [editProjectType, setEditProjectType] = useState("");
+
   // comst { importProjects }  = useImportProjects();
    const {
       importClientData,
@@ -102,6 +103,7 @@ export const Projecttable = () => {
     setEditClientId(project.client?.id || "");
     setEditProjectName(project.project_name);
     setEditTags(project.tags_activities?.map(tag => tag.id) || []);
+    setEditProjectType(project.project_type); 
   };
 
 const handleSubmit = async () => {
@@ -149,6 +151,7 @@ const handleGoogleSheetImport = async () => {
       client_id: editClientId,
       project_name: editProjectName,
       tags_activitys: editTags,
+      project_type: editProjectType.trim(),
 
     };
 
@@ -218,6 +221,7 @@ const handleGoogleSheetImport = async () => {
               <tr className="table-th-tr-row table-bg-heading">
                 <th className="px-4 py-2 font-medium items-center text-sm">Client Name</th>
                 <th className="px-4 py-2 font-medium items-center text-sm">Project Name</th>
+                <th className="px-4 py-2 font-medium items-center text-sm">Project Type</th>
                 <th className="px-4 py-2 font-medium items-center text-sm">Tags</th>
                 <th className="px-4 py-2 font-medium items-center text-sm">Created Date</th>
                 <th className="px-4 py-2 font-medium items-center text-sm">Actions</th>
@@ -265,6 +269,22 @@ const handleGoogleSheetImport = async () => {
                         project.project_name
                       )}
                     </td>
+                   <td className="px-6 py-4 items-center text-center text-gray-800 font-medium text-sm">
+  {editProjectId === project.id ? (
+    <select
+      value={editProjectType}
+      onChange={(e) => setEditProjectType(e.target.value)}
+      className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 w-full"
+      autoFocus
+    >
+      <option value="Hourly">Hourly</option>
+      <option value="Fixed">Fixed</option>
+    </select>
+  ) : (
+    project.project_type
+  )}
+</td>
+
                     <td className="px-6 py-4 text-center text-gray-700 text-sm">
                         {editProjectId === project.id ? (
                           // Edit mode: Display activity tags as checkboxes with a search input

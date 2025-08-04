@@ -124,9 +124,9 @@ export const Clients = () => {
   // Helper function to get error message for a field
   const getErrorMessage = (field) => {
     if (errors[field] && Array.isArray(errors[field])) {
-      return errors[field][0]; // Laravel often sends an array of messages
+      return errors[field][0]; 
     }
-    return errors[field]; // For simple string errors or frontend errors
+    return errors[field]; 
   };
 
 

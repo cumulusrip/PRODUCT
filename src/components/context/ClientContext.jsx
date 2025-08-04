@@ -29,13 +29,13 @@ const addClient = async (
   address,
   companyname,
   communication,
-  projectType,
+  // projectType,
 ) => {
   setIsLoading(true);
   setMessage("");
 
   // ✅ Validate required fields before proceeding
-  if (!clienttype || !name || !contactEmail || !communication || !projectType || !contactnumber) {
+  if (!clienttype || !name || !contactEmail || !communication || !contactnumber) {
     showAlert?.({
       variant: "warning",
       title: "Missing Fields",
@@ -73,7 +73,7 @@ const clientData = {
   client_email: String(contactEmail).trim(),
   client_number: String(contactnumber).trim(),
   communication: String(communication).trim(),
-  project_type: String(projectType).trim(),
+  // project_type: String(projectType).trim(),
   ...(clienttype === "Hired on Upwork" 
     ? { hire_on_id: hiringId ? String(hiringId).trim() : null }
     : {
@@ -98,9 +98,8 @@ const clientData = {
 
     // ✅ Get raw response to catch HTML responses
     const rawResponse = await response.text();
-    // console.log("📥 Raw response text:", rawResponse);
 
-    // ✅ Try to parse as JSON
+
     let data;
     try {
       data = JSON.parse(rawResponse);

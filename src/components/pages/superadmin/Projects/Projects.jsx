@@ -16,7 +16,8 @@ export const Projects = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedTags, setSelectedTags] = useState([]);
   const { showAlert } = useAlert();
-
+  const [projectType, setProjectType] = useState("");
+  const [errors, setErrors] = useState({});
    useEffect(() => {
       // Fetch activity tags on component mount
       getActivityTags();
@@ -25,7 +26,7 @@ export const Projects = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!clientId || !projectName || selectedTags.length === 0) {
+    if (!clientId || !projectName || selectedTags.length === 0 || !projectType) {
       showAlert({ variant: "warning", title: "warning", message: "Please fill in all required fields and select at least one activity tag." });
       // setShowMessage(true);
       return;
@@ -36,9 +37,10 @@ export const Projects = () => {
       projectName.trim()
 
     ) {
-      await addProject(clientId, projectName, selectedTags );
+      await addProject(clientId, projectName, selectedTags ,projectType );
       setClientId("");
       setProjectName("");
+      setProjectType("");
       setSelectedTags([]);
       setShowMessage(true);
       setShowModal(false);
@@ -52,6 +54,13 @@ export const Projects = () => {
     setSelectedTags(selectedValues);
   };
   
+
+    const getErrorMessage = (field) => {
+    if (errors[field] && Array.isArray(errors[field])) {
+      return errors[field][0]; // Laravel often sends an array of messages
+    }
+    return errors[field]; // For simple string errors or frontend errors
+  };
 
   return (
     <div className="bg-white">
@@ -165,7 +174,34 @@ export const Projects = () => {
   )}
 </div>
 
-
+     <div>
+                <label
+                  htmlFor="directProjectType"
+                  className="block font-medium text-gray-700 text-sm"
+                >
+                  Project Type
+                </label>
+                <select
+                  id="directProjectType"
+                  value={projectType}
+                  onChange={(e) => {
+                    setProjectType(e.target.value);
+                    setErrors({ ...errors, project_type: null });
+                  }}
+                  className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                    getErrorMessage('project_type') ? "border-red-500" : "border-gray-300"
+                  }`}
+                >
+                  <option value="">Select Project Type</option>
+                  <option value="fixed">Fixed</option>
+                  <option value="hourly">Hourly</option>
+                </select>
+                {getErrorMessage('project_type') && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {getErrorMessage('project_type')}
+                  </p>
+                )}
+              </div>
 
               {/* <button
                 type="submit"

@@ -309,7 +309,7 @@ export const Clients = () => {
                 )}
               </div>
 
-              <div>
+              {/* <div>
                 <label
                   htmlFor="projectType"
                   className="block font-medium text-gray-700 text-sm"
@@ -336,7 +336,7 @@ export const Clients = () => {
                     {getErrorMessage('project_type')}
                   </p>
                 )}
-              </div>
+              </div> */}
               <div className="col-span-2">
                 <label
                   htmlFor="communication"
@@ -501,7 +501,7 @@ export const Clients = () => {
                 )}
               </div>
 
-              <div>
+              {/* <div>
                 <label
                   htmlFor="directProjectType"
                   className="block font-medium text-gray-700 text-sm"
@@ -528,7 +528,7 @@ export const Clients = () => {
                     {getErrorMessage('project_type')}
                   </p>
                 )}
-              </div>
+              </div> */}
 
               <div>
                 <label

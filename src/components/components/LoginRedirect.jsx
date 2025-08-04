@@ -47,7 +47,7 @@ const LoginRedirect = () => {
     validateToken();
   }, []);
 
-  // While checking, render nothing (or you can show a spinner)
+
   if (checking) return null;
 
   if (isLoggedIn) {

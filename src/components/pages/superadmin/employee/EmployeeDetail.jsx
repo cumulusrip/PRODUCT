@@ -310,75 +310,80 @@ const EmployeeDetail = () => {
 
   return (
     <>
-      <div className="rounded-2xl border border-gray-100 bg-white shadow-xl max-h-screen overflow-y-auto  space-y-12 font-sans">
-        {/* Header */}
-        <SectionHeader
-          icon={User} // Using User icon for employee details context
-          title="Employee Details"
-          subtitle="Gain insights into employee profiles and project activity distributions."
-        />
+      
+        <div className="rounded-2xl border border-gray-100 bg-white shadow-xl max-h-screen overflow-y-auto space-y-12 font-sans px-6 py-10">
+      {/* Header */}
+      <SectionHeader
+        icon={User}
+        title="Employee Details"
+        subtitle="Gain insights into employee profiles and project activity distributions."
+      />
 
-         {/* Profile Card */}
-         <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-  <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+      <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-200 transition-shadow hover:shadow-xl duration-300">
+  <div className="flex flex-col lg:flex-row items-start gap-6">
     
-    {/* Profile Section */}
-    <div className="flex flex-col items-center text-center space-y-4">
+    {/* Profile Picture */}
+    <div className="flex-shrink-0">
       <img
         src={employee.profile_pic || 'https://cdn-icons-png.flaticon.com/512/149/149071.png'}
         alt="Profile"
-        className="w-36 h-36 rounded-full object-cover shadow-md border-4 border-blue-100 ring-2 ring-blue-50 transition-transform duration-300 hover:scale-105"
+        className="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-blue-100 shadow-md hover:scale-105 transition-transform duration-300 ring-2 ring-blue-100"
       />
-      <div>
-        <h2 className="text-xl font-bold text-gray-900">{employee.name}</h2>
-        <p className="text-sm text-gray-500">{employee.email}</p>
-      </div>
     </div>
 
-    {/* Details Section */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm text-gray-700 w-full">
+    {/* Profile Info */}
+    <div className="flex flex-col flex-grow space-y-4">
+      
+      {/* Name & Email */}
       <div>
-        <span className="font-semibold text-gray-900">Designation:</span> {employee.roles}
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{employee.name}</h2>
+        <p className="text-sm text-gray-500">{employee.email}</p>
       </div>
-      <div>
-        <span className="font-semibold text-gray-900">Phone:</span> {employee.phone_num || 'N/A'}
-      </div>
-      <div>
-        <span className="font-semibold text-gray-900">Emergency Contact:</span> {employee.emergency_phone_num || 'N/A'}
-      </div>
-      <div>
-        <span className="font-semibold text-gray-900">Team:</span> {employee.team || 'N/A'}
-      </div>
-      <div className="sm:col-span-2">
-        <span className="font-semibold text-gray-900">Address:</span> {employee.address || 'N/A'}
+
+      {/* Details Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm text-gray-700">
+        <div>
+          <span className="font-medium text-gray-800">Designation:</span> {employee.roles}
+        </div>
+        <div>
+          <span className="font-medium text-gray-800">Phone:</span> {employee.phone_num || 'N/A'}
+        </div>
+        <div>
+          <span className="font-medium text-gray-800">Emergency Contact:</span> {employee.emergency_phone_num || 'N/A'}
+        </div>
+        <div>
+          <span className="font-medium text-gray-800">Team:</span> {employee.team || 'N/A'}
+        </div>
+        <div className="sm:col-span-2">
+          <span className="font-medium text-gray-800">Address:</span> {employee.address || 'N/A'}
+        </div>
       </div>
     </div>
-    
   </div>
 </div>
 
 
-
-        {employee.roles === 'Team' ? (
-          <>
+      {employee.roles === 'Team' ? (
         <div className="space-y-12">
           {/* Charts Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-800 mb-6">Total Billable vs. Non-Billable Hours</h3>
-              <div className="h-96"> {/* Increased height for better chart visibility */}
-                <Bar data={barChartData} options={barChartOptions} />
-              </div>
+            <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 transition-shadow hover:shadow-lg duration-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Total Billable vs. Non-Billable Hours</h3>
+              <div className="flex justify-center items-center py-6">
+  <div className="w-full sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] max-w-4xl h-72">
+    <Bar data={barChartData} options={barChartOptions} />
+  </div>
+</div>
             </div>
 
-            <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
-              <h3 className="text-xl font-bold text-gray-800 mb-6">Activity Distribution (All Projects)</h3>
-              <div className="h-96 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 transition-shadow hover:shadow-lg duration-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Activity Distribution (All Projects)</h3>
+              <div className="h-64 w-full flex items-center justify-center">
                 {doughnutChartData && doughnutChartData.labels.length > 0 ? (
                   <Doughnut data={doughnutChartData} options={pieDoughnutOptions} />
                 ) : (
-                  <div className="text-center text-gray-500 p-4">
-                    <BarChart className="w-16 h-16 mx-auto mb-3 text-gray-300" />
+                  <div className="text-center text-gray-500 p-4 bg-gray-50 rounded-xl shadow-inner transition-all duration-300">
+                    <BarChart className="w-16 h-16 mx-auto mb-3 text-blue-200" />
                     <p className="font-medium">No activity data available for all projects.</p>
                   </div>
                 )}
@@ -387,10 +392,8 @@ const EmployeeDetail = () => {
           </div>
 
           {/* Project Specific Chart */}
-          <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100 space-y-8">
-            <h3 className="text-xl font-bold text-gray-800"></h3>
-
-            <div className="flex flex-col lg:flex-row items-start gap-8"> {/* Align items-start for better flow */}
+          <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100 space-y-8 transition-shadow hover:shadow-lg duration-300">
+            <div className="flex flex-col lg:flex-row items-start gap-8">
               <div className="w-full lg:w-1/3">
                 <label htmlFor="project-select" className="block text-sm font-medium text-gray-700 mb-2">
                   Select a project:
@@ -399,7 +402,7 @@ const EmployeeDetail = () => {
                   id="project-select"
                   value={selectedProject}
                   onChange={handleProjectChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-800 bg-white hover:border-blue-400 transition-all duration-200"
+                  className="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-400 text-gray-700 bg-white hover:shadow-md transition-all duration-200"
                 >
                   <option value="" disabled>Choose a project</option>
                   {projects.length > 0 ? (
@@ -415,32 +418,34 @@ const EmployeeDetail = () => {
               </div>
 
               {selectedProject && (
-                <div className="w-full lg:w-2/3 bg-white p-6 rounded-2xl shadow-md border border-gray-100 min-h-[384px] flex items-center justify-center"> {/* min-h for consistent card size */}
+                <div className="w-full lg:w-2/3 bg-white p-6 rounded-2xl shadow-md border border-gray-100 min-h-[384px] flex items-center justify-center">
                   {pieChartData?.datasets?.length > 0 && pieChartData.datasets[0].data.some(val => val > 0) ? (
-                    <div className='flex justify-center h-80 w-full'> {/* Adjusted inner div for chart */}
+                    <div className='flex justify-center items-center h-60 w-full max-w-sm mx-auto'>
                       <Pie data={pieChartData} options={pieDoughnutOptions} />
                     </div>
                   ) : (
-                    <div className="text-center text-gray-500 p-4">
-                      <BarChart className="w-16 h-16 mx-auto mb-3 text-gray-300" />
+                    <div className="text-center text-gray-500 p-4 bg-gray-50 rounded-xl shadow-inner transition-all duration-300">
+                      <BarChart className="w-16 h-16 mx-auto mb-3 text-blue-200" />
                       <p className="font-medium">No activity data for the selected project.</p>
                       <p className="text-sm text-gray-400 mt-1">Please select another project or check project activities.</p>
                     </div>
                   )}
                 </div>
               )}
+
               {!selectedProject && projects.length > 0 && (
                 <div className="w-full lg:w-2/3 bg-white p-6 rounded-2xl shadow-md border border-gray-100 min-h-[384px] flex items-center justify-center">
-                  <div className="text-center text-gray-500 p-4">
-                    <BarChart className="w-16 h-16 mx-auto mb-3 text-gray-300" />
+                  <div className="text-center text-gray-500 p-4 bg-gray-50 rounded-xl shadow-inner transition-all duration-300">
+                    <BarChart className="w-16 h-16 mx-auto mb-3 text-blue-200" />
                     <p className="font-medium">Select a project from the dropdown to view its activity breakdown.</p>
                   </div>
                 </div>
               )}
-               {!selectedProject && projects.length === 0 && (
+
+              {!selectedProject && projects.length === 0 && (
                 <div className="w-full lg:w-2/3 bg-white p-6 rounded-2xl shadow-md border border-gray-100 min-h-[384px] flex items-center justify-center">
-                  <div className="text-center text-gray-500 p-4">
-                    <BarChart className="w-16 h-16 mx-auto mb-3 text-gray-300" />
+                  <div className="text-center text-gray-500 p-4 bg-gray-50 rounded-xl shadow-inner transition-all duration-300">
+                    <BarChart className="w-16 h-16 mx-auto mb-3 text-blue-200" />
                     <p className="font-medium">This employee is not assigned to any projects yet.</p>
                   </div>
                 </div>
@@ -448,13 +453,10 @@ const EmployeeDetail = () => {
             </div>
           </div>
         </div>
-          </>
-        ) : (
-          <>
-            <SuperAdminDashboard />
-          </>
-        )}
-      </div>
+      ) : (
+        <SuperAdminDashboard />
+      )}
+    </div>
     </>
   );
 }
