@@ -148,13 +148,47 @@ export const UserProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+
+const deletesheet = async (id) => {
+  console.log("Deleting sheet with ID:", id);
+  try {
+    const token = localStorage.getItem("userToken");
+    const response = await fetch(`${API_URL}/api/delete-performa-sheets`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ sheet_id: id }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to delete employee");
+    }
+
+    fetchPerformanceSheets();
+    showAlert({ variant: "success", title: "Success", message: "Performance Deleted Successfully" });
+    setError(null);
+  } catch (err) {
+    console.error("Error deleting employee:", err);
+    setError(err.message);
+    showAlert({ variant: "error", title: "Error", message: err.message });
+  }
+};
+
+
+
+
+
   useEffect(() => {
     fetchUserProjects();
     fetchPerformanceSheets();
     fetchUserassignedProjects();
   }, []);
   return (
-    <UserContext.Provider value={{ editPerformanceSheet, fetchUserassignedProjects, userassignedProjects, userProjects, performanceSheets, loading, error, fetchUserProjects, submitEntriesForApproval, fetchPerformanceSheets }}>
+    <UserContext.Provider value={{ editPerformanceSheet, fetchUserassignedProjects, userassignedProjects, userProjects, performanceSheets, loading, error, fetchUserProjects, submitEntriesForApproval, fetchPerformanceSheets,deletesheet }}>
       {children}
     </UserContext.Provider>
   );

@@ -118,6 +118,7 @@ function ProjectCard({ project, editProjectId, editProjectName, setEditProjectNa
             ) : (
               <p className="text-gray-500 text-sm">No managers assigned.</p>
             )}
+            <div className="flex gap-3" >
             <button
               onClick={handleRemoveManagers}
               className="mt-3 bg-blue-500 text-white px-3 py-1 rounded-lg text-xs font-medium shadow hover:bg-blue-600 transition"
@@ -125,6 +126,14 @@ function ProjectCard({ project, editProjectId, editProjectName, setEditProjectNa
             >
               {loading ? "Removing..." : "Confirm Remove"}
             </button>
+                <button
+              onClick={() => setShowRemoveList(false)}
+              className="mt-3 bg-blue-500 text-white px-3 py-1 rounded-lg text-xs font-medium shadow hover:bg-blue-600 transition"
+              disabled={loading}
+            >
+    cancel
+            </button>
+          </div>
           </div>
         )}
         {isOpen && (

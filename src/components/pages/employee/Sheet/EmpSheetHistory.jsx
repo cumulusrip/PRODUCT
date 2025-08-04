@@ -23,7 +23,7 @@ import { useAlert } from "../../../context/AlertContext";
 import { ClearButton, CancelButton } from "../../../AllButtons/AllButtons";
 
 export const EmpSheetHistory = () => {
-  const { userProjects, error, editPerformanceSheet, performanceSheets, loading, fetchPerformanceSheets } = useUserContext();
+  const { userProjects, error, editPerformanceSheet, performanceSheets, loading, fetchPerformanceSheets,deletesheet } = useUserContext();
   console.log("Performance Sheets:", performanceSheets); // Debugging: Check the structure
 
   const [startDate, setStartDate] = useState("");
@@ -508,6 +508,7 @@ const approvedData = filteredSheets.filter(
 
                         {
                           sheet.status && sheet.status.toLowerCase() === "rejected" && (
+                            <>
                             <button
                               onClick={() => handleEditClick(index, sheet)}
                               className="edit-btn inline-flex items-center px-3 py-1.5 rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-150"
@@ -515,6 +516,14 @@ const approvedData = filteredSheets.filter(
                               <Edit className="h-4 w-4 mr-1" />
                               Edit
                             </button>
+                             <button
+                              onClick={() => deletesheet(sheet.id)}
+                              className="delete-btn inline-flex items-center px-3 py-1.5 rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-150"
+                            >
+                              <Trash2 className="h-4 w-4 mr-1" />
+                                Delete
+                            </button>
+                            </>
                           )
                         }
                       </div>

@@ -185,8 +185,7 @@ const clientData = {
   };
   
   const editClient = async (id, updatedData) => {
-    // console.log("id", id);
-    // console.log("updatedData", updatedData);
+  
     setIsLoading(true);
     setMessage("");
     try {
