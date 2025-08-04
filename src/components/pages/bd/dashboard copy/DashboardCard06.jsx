@@ -100,7 +100,7 @@ const DashboardCard06 = () => {
   return (
     <div className="col-span-full xl:col-span-5 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden transform transition-all duration-300 ease-in-out hover:shadow-2xl hover:border-blue-200">
       {/* Tooltip position prop added here */}
-      <StatCardHeader icon={Briefcase} title="Total Projects in Department" tooltip="Displaying the distribution of projects across different departments." tooltipPosition="bottom" />
+      <StatCardHeader icon={Briefcase} title="Total Projects in Department"  tooltipPosition="bottom" />
       
       {/* Content area for chart or messages */}
       <div className="flex flex-grow items-center justify-center p-4">

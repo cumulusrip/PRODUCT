@@ -61,6 +61,7 @@ import Accessory from "./pages/employee/Accessory/Accessory";
 import Profile from "./pages/superadmin/Profile";
 import { useNavigate } from "react-router-dom";
 import NotFound from "./components/NotFound";
+import ColorPalettePage from "./ui/widgets/layout/ColorPalettePage";
 import { ImportProvider } from "./context/Importfiles.";
 import RedirectToDashboard from "./components/RedirectToDashboard";
 // import { PMProvider } from "./context/PMContext";
@@ -178,7 +179,10 @@ const shouldShowSidebar = !hideSidebarRoutes.includes(location.pathname) && hasR
           />
 
 
-
+  <Route
+            path="/superadmin/theme"
+            element={<RoleBasedRoute element={<ColorPalettePage />} allowedRoles={["superadmin"]} />}
+          />
 
 
 

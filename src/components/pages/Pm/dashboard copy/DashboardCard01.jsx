@@ -55,7 +55,7 @@ const DashboardCard01 = () => {
   const hasChartData = labels.length > 0 && data.some(val => val > 0);
   return (
     <div className="col-span-2 sm:col-span-6 xl:col-span-7 bg-white/70 backdrop-blur-md shadow-xl rounded-2xl flex flex-col border border-gray-200">
-      <StatCardHeader icon={Briefcase} title="Total employees in department" tooltip="Total employees in department" />
+      <StatCardHeader icon={Briefcase} title="Total employees in department"  />
       <div className="p-5 h-96 flex items-center justify-center">
         {loading ? (
           <div className="flex flex-col items-center justify-center space-y-4 text-gray-600 py-8">

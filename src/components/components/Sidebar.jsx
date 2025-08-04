@@ -61,17 +61,18 @@ useEffect(() => {
       { name: "Manage Sheets", path: "/superadmin/Manage-sheets", icon: <FileChartLine /> },
       { name: "Manage Leaves", path: "/superadmin/manage-leaves", icon: <CalendarCog /> },
       { name: "Activity Tags", path: "/superadmin/activity-tags", icon: <FileChartLine /> },
+      // { name: "Theme", path: "/superadmin/theme", icon: <FileChartLine /> },
     ],
     [Roles.BD]: [
       { name: "Dashboard", path: "/billingmanager/dashboard", icon: <House /> },
       { name: "Clients", path: "/billingmanager/clients", icon: <Handshake /> },
       { name: "Projects", path: "/billingmanager/projects", icon: <Folders/> },
       { name: "Teams", path: "/billingmanager/teams", icon: <Users /> },
-                  { name: "employee Management", path: "/billingmanager/users", icon: <User /> },
+      { name: "employee Management", path: "/billingmanager/users", icon: <User /> },
 
       { name: "Project Assigned", path: "/billingmanager/projects-assigned", icon: <FileSpreadsheet />  },
       { name: "Manage Sheets", path: "/billingmanager/Manage-sheets", icon: <FileChartLine />},
-                  { name: "Leaves", path: "/billingmanager/leaves",icon: <CalendarHeart />  },
+      { name: "Leaves", path: "/billingmanager/leaves",icon: <CalendarHeart />  },
 
     ],
     [Roles.HR]: [

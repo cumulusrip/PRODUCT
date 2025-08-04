@@ -86,7 +86,7 @@ function DashboardCard04() {
       <StatCardHeader
         icon={UserPlus}
         title="Billable / Non-Billable"
-        tooltip="Displaying your weekly billable and non-billable hours breakdown."
+        // tooltip="Displaying your weekly billable and non-billable hours breakdown."
         // Do NOT pass any custom props for numbers here as per your request
       />
 

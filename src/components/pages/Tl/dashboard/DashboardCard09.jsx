@@ -60,7 +60,7 @@ function DashboardCard09() {
 
     return (
         <div className="flex flex-col rounded-lg shadow-lg col-span-full sm:col-span-6 bg-white shadow-xs rounded-xl">
-            <StatCardHeader icon={Briefcase} title="Projects Over Last 6 Months" tooltip="Monthly project count from the last six months." />
+            <StatCardHeader icon={Briefcase} title="Projects Over Last 6 Months" />
             <div className="mt-10 flex items-center justify-center h-96">
                 {loading ? (
                     <div className="flex flex-col items-center justify-center space-y-4 text-gray-600 py-8">
