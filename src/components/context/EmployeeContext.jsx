@@ -8,7 +8,7 @@ const EmployeeContext = createContext(undefined);
 export const EmployeeProvider = ({ children }) => {
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // This is more for general context-level errors, not specific validation ones
+  const [error, setError] = useState(null); 
   const { showAlert } = useAlert();
 
   const fetchEmployees = async () => {
@@ -28,15 +28,14 @@ export const EmployeeProvider = ({ children }) => {
       });
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch employees"); // Throw specific message if available
+        throw new Error(errorData.message || "Failed to fetch employees"); 
       }
       const data = await response.json();
-      // console.log("all employess,", data);
       setEmployees(data.data || []);
     } catch (err) {
       console.error("Error fetching employees:", err);
-      setError(err.message); // Set general error for the context
-      showAlert({ variant: "error", title: "Error", message: err.message }); // Show an alert for fetch errors
+      setError(err.message); 
+      showAlert({ variant: "error", title: "Error", message: err.message }); 
     } finally {
       setLoading(false);
     }
@@ -50,8 +49,9 @@ const addEmployee = async (employeeData) => {
   try {
     const token = localStorage.getItem("userToken");
     const formData = new FormData();
-
+console.log("Adding employee with data:", employeeData);
     formData.append("name", employeeData.name || "");
+        formData.append("employee_id", employeeData.employee_id || "");
     formData.append("email", employeeData.email || "");
     formData.append("password", employeeData.password || "");
     formData.append("address", employeeData.address || "");
@@ -88,7 +88,7 @@ const addEmployee = async (employeeData) => {
     if (images.length === 1 && images[0] instanceof File) {
       formData.append("profile_pic", images[0]);
     }
-
+console.log("FormData entries before submission:",formData);
     const response = await fetch(`${API_URL}/api/users`, {
       method: "POST",
       headers: {
@@ -121,12 +121,8 @@ const addEmployee = async (employeeData) => {
     return true; // ✅ Needed
   } catch (err) {
     console.error("Error adding employee:", err);
-    // showAlert({
-    //   variant: "error",
-    //   title: "Network Error",
-    //   message: err.message,
-    // });
-    return false; // ✅ Still needed
+
+    return false; 
   }finally{
     fetchEmployees();
   }
@@ -152,8 +148,6 @@ const addEmployee = async (employeeData) => {
       formData.append("team_id", updatedData.team_id || ""); // Ensure empty string for null/undefined
       formData.append("role_id", updatedData.role_id || ""); // Ensure empty string for null/undefined
       formData.append("pm_id", updatedData.pm_id || ""); // Ensure empty string for null/undefined
-
-      // This is crucial for Laravel to interpret the request as a PUT/PATCH with FormData
       formData.append('_method', 'PUT');
 
       if (updatedData.profile_pic instanceof File) {
