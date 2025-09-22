@@ -342,6 +342,11 @@ const EmployeeDetail = () => {
 
       {/* Details Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm text-gray-700">
+         <div>
+          <span className="font-medium text-gray-800">Employee ID:</span> 
+          
+          {employee.employee_id || 'N/A'}
+        </div>
         <div>
           <span className="font-medium text-gray-800">Designation:</span> {employee.roles}
         </div>
