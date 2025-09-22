@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import Pagination from "../../../components/Pagination";
 const EmployeeManagement = () => {
   const navigate = useNavigate();
-  const { employees, loading, addEmployee, deleteEmployee, updateEmployee, error: contextError } = useEmployees(); // Renamed 'error' to 'contextError' to avoid conflict
+  const { employees, loading, addEmployee, deleteEmployee, updateEmployee, error: contextError } = useEmployees(); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [editingEmployee, setEditingEmployee] = useState(null);
@@ -41,9 +41,9 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
 
 
-  // --- NEW STATE FOR VALIDATION ERRORS ---
+
   const [validationErrors, setValidationErrors] = useState({});
-  // --- END NEW STATE ---
+
 
   const filteredEmployees = employees.filter((employee) => {
     const value = (employee[filterBy]?.toLowerCase() || "").trim();
@@ -84,7 +84,8 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
     team_id: "",
     role_id: "",
     profile_pic: null,
-    pm_id: 1, // Default PM ID
+    pm_id: 1, 
+    employee_id: "",
   });
 
   const { showAlert } = useAlert();
@@ -100,23 +101,23 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
   const handleEditEmployee = (employee) => {
     setSelectedEmployee(employee);
-    // Ensure team_id and role_id are numbers or null, matching backend expectations
+    
     setEditingEmployee({
       ...employee,
-      team_id: employee.team_id || null, // Convert "N/A" or empty to null
+      team_id: employee.team_id || null, 
       role_id: employee.role_id || null,
-      pm_id: employee.pm_id || 1, // Ensure pm_id is present, default if missing
+      pm_id: employee.pm_id || 1, 
     });
-    // Clear validation errors when opening edit modal
+
     setValidationErrors({});
   };
 
-  // --- MODIFIED handleUpdateEmployee ---
+ 
   const handleUpdateEmployee = async () => {
     console.log("before sending", editingEmployee);
     if (!editingEmployee) return;
 
-    // Clear previous validation errors
+   
     setValidationErrors({});
 
     try {
@@ -177,7 +178,7 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
       !newEmployee.email ||
       !newEmployee.password ||
       !newEmployee.phone_num ||
-      !newEmployee.role_id
+      !newEmployee.role_id 
     ) {
       showAlert({ variant: "warning", title: "Required fields", message: "Name, Email, Password, Phone Number, and Role are required." });
       console.log("❌ Missing required fields for client-side validation");
@@ -193,6 +194,7 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
 
         team_id: !newEmployee.role_id ? ["Please select the Department."] : prev.team_id,
         emergency_phone_num: !newEmployee.role_id ? ["Emergency phone nmumber is required."] : prev.emergency_phone_num,
+         employee_id: !newEmployee.employee_id ? ["Employee ID is required."] : prev.employee_id,
         // role_id: !newEmployee.role_id ? ["The role field is required."] : prev.role_id,
       }));
       return;
@@ -212,7 +214,8 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
         team_id: "",
         role_id: "",
         profile_pic: null,
-        pm_id: 1, // Reset pm_id as well
+        pm_id: 1, 
+        employee_id: "",
       });
       setValidationErrors({}); // Clear errors on successful submission
       closeModal();
@@ -265,6 +268,7 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
       role_id: "",
       profile_pic: null,
       pm_id: 1,
+      employee_id:"",
     });
   };
 
@@ -344,6 +348,7 @@ const handleSubmit = async () => {
             <option value="email">Email</option>
             <option value="team">Department</option>
             <option value="phone_num">Phone</option>
+            <option value="employee_id">Employee ID</option>
             <option value="roles">Role</option>
           </select>
 
@@ -448,6 +453,7 @@ const handleSubmit = async () => {
           <thead>
             <tr className="table-th-tr-row table-bg-heading">
               <th className="px-4 py-2 text-center"></th>
+               <th className="px-4 py-2 text-center">Emp ID</th>
               <th className="px-4 py-2 text-center">Name</th>
               <th className="px-4 py-2 text-center">Email</th>
               <th className="px-4 py-2 text-center">Phone</th>
@@ -476,6 +482,7 @@ const handleSubmit = async () => {
                       alt={employee.name}
                     />
                   </td>
+                  <td className="px-4 py-3 text-gray-900 text-center">{employee.employee_id}</td>
                   <td className="px-4 py-3 text-gray-900 text-center">{employee.name}</td>
                   <td className="px-4 py-3 text-gray-900 text-center">{employee.email}</td>
                   <td className="px-4 py-3 text-gray-900 text-center">{employee.phone_num || ""}</td>
@@ -585,8 +592,14 @@ const handleSubmit = async () => {
 
             {editingEmployee ? (
               <>
-                {/* Edit Mode (No changes needed here for this specific issue) */}
+
                 <div className="flex flex-col items-center mb-6">
+  <label
+                    htmlFor="edit_profile_pic"
+                    className="cursor-pointer bg-yellow-50 text-black-700 px-4 py-2 rounded-full text-sm font-semibold hover:bg-blue-100 transition-colors duration-200 mb-5"
+                  >
+                  {editingEmployee.employee_id}
+                  </label>
                   <img
                     className="border-2 border-[#d7d7d7] outline outline-[5px] outline-white p-[3px] shadow-[5px_12px_15px_-6px_rgba(128,128,128,1)] rounded-full w-32 h-32 object-cover mb-4"
                     src={
@@ -674,10 +687,35 @@ const handleSubmit = async () => {
                         </p>
                       )}
                     </div>
+                  
                   </div>
 
                   {/* Phone Number and Emergency Phone - Half-half layout on larger screens */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                           {/* <div>
+                      <label
+                        htmlFor="edit_email"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
+                        EMP ID
+                      </label>
+                      <input
+                        id="edit_email"
+                        type="text"
+                        name="employee_id"
+                        value={editingEmployee.employee_id}
+                        // onChange={(e) =>
+                        //   setEditingEmployee({ ...editingEmployee, employee_id: e.target.value })
+                        // }
+                        className="w-full p-3 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-200 ease-in-out"
+                        placeholder="Email Address"
+                      />
+                      {validationErrors.employee_id && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {validationErrors.employee_id[0]}
+                        </p>
+                      )}
+                    </div> */}
                     <div>
                       <label
                         htmlFor="edit_phone_num"
@@ -836,6 +874,7 @@ const handleSubmit = async () => {
                         </p>
                       )}
                     </div>
+                
                   </div>
 
                   {/* Save Button */}
@@ -952,6 +991,28 @@ const handleSubmit = async () => {
                   {validationErrors.name && (
                     <p className="text-red-500 text-xs mt-1">
                       {validationErrors.name[0]}
+                    </p>
+                  )}
+                </div>
+                    <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Employee ID <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="e.g., TAS-123"
+                    name="employee_id"
+                    value={newEmployee.employee_id}
+                    onChange={handleInputChange}
+                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-200 ease-in-out"
+                  />
+                  {validationErrors.employee_id && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {validationErrors.employee_id[0]}
                     </p>
                   )}
                 </div>
