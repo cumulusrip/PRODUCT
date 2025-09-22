@@ -20,6 +20,9 @@ export const ClientProvider = ({ children }) => {
     return false;
   };
 
+// ---------------------------
+// addClient function with detailed backend errors
+// ---------------------------
 const addClient = async (
   clienttype,
   name,
@@ -28,65 +31,79 @@ const addClient = async (
   contactnumber,
   address,
   companyname,
-  communication,
-  // projectType,
+  communication
+  // projectType
 ) => {
+  console.log("🟢 addClient called with:", {
+    clienttype,
+    name,
+    hiringId,
+    contactEmail,
+    contactnumber,
+    address,
+    companyname,
+    communication,
+  });
+
   setIsLoading(true);
   setMessage("");
 
-  // ✅ Validate required fields before proceeding
-  if (!clienttype || !name || !contactEmail || !communication || !contactnumber) {
-    showAlert?.({
-      variant: "warning",
-      title: "Missing Fields",
-      message: "Please fill in all required client details.",
-    });
-    setIsLoading(false);
-    return { success: false };
+  // ---------------------------
+  // FRONTEND VALIDATION
+  // ---------------------------
+  let frontendErrors = {};
+  if (!clienttype?.trim()) frontendErrors.client_type = ["Client type is required"];
+  if (!name?.trim()) frontendErrors.name = ["Client name is required"];
+  if (!contactEmail?.trim()) frontendErrors.client_email = ["Contact email is required"];
+  if (contactEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail))
+    frontendErrors.client_email = ["Invalid email format"];
+  if (!contactnumber?.trim()) frontendErrors.contact_number = ["Contact number is required"];
+  if (contactnumber && !/^[0-9]{10}$/.test(contactnumber))
+    frontendErrors.contact_number = ["Contact number must be 10 digits"];
+  if (!communication?.trim()) frontendErrors.communication = ["Communication is required"];
+
+  if (clienttype === "Hired on Upwork" && !hiringId?.trim())
+    frontendErrors.hire_on_id = ["Hiring ID is required for Upwork clients"];
+
+  if (clienttype === "Direct") {
+    if (!companyname?.trim()) frontendErrors.company_name = ["Company name is required"];
+    if (!address?.trim()) frontendErrors.company_address = ["Address is required"];
   }
 
-  if (clienttype === "Hired on Upwork" && !hiringId) {
+  if (Object.keys(frontendErrors).length > 0) {
+    console.warn("⚠️ Frontend validation errors:", frontendErrors);
     showAlert?.({
-      variant: "warning",
-      title: "Missing Hiring ID",
-      message: "Please enter a valid hire_on_id for Upwork clients.",
+      variant: "error",
+      title: "Validation Error",
+      message: Object.values(frontendErrors)
+        .flat()
+        .join("\n"),
     });
     setIsLoading(false);
-    return { success: false };
+    return { success: false, errors: frontendErrors };
   }
 
-  if (clienttype === "Direct" && (!address || !companyname)) {
-    showAlert?.({
-      variant: "warning",
-      title: "Missing Company Info",
-      message: "Please provide company name and address for direct clients.",
-    });
-    setIsLoading(false);
-    return { success: false };
-  }
+  // ---------------------------
+  // PREPARE CLIENT DATA
+  // ---------------------------
+  const clientData = {
+    client_type: clienttype?.trim(),
+    name: name?.trim(),
+    client_email: contactEmail?.trim(),
+    client_number: contactnumber?.trim(),
+    communication: communication?.trim(),
+    ...(clienttype === "Hired on Upwork"
+      ? { hire_on_id: hiringId?.trim() || null }
+      : {
+          company_name: companyname?.trim() || null,
+          company_address: address?.trim() || null,
+        }),
+    // project_type: projectType?.trim() || null,
+  };
+
+  console.log("🚀 Sending clientData to server:", clientData);
 
   try {
-    // ✅ Always include optional fields as null if not provided
-const clientData = {
-  client_type: String(clienttype).trim(),
-  name: String(name).trim(),
-  client_email: String(contactEmail).trim(),
-  client_number: String(contactnumber).trim(),
-  communication: String(communication).trim(),
-  // project_type: String(projectType).trim(),
-  ...(clienttype === "Hired on Upwork" 
-    ? { hire_on_id: hiringId ? String(hiringId).trim() : null }
-    : {
-        company_name: typeof companyname === "string" && companyname.trim() ? companyname.trim() : null,
-        company_address: typeof address === "string" && address.trim() ? address.trim() : null,
-      }
-  )
-};
-
-
-
-    // console.log("🚀 Sending client data:", clientData);
-
     const response = await fetch(`${API_URL}/api/clients`, {
       method: "POST",
       headers: {
@@ -96,64 +113,82 @@ const clientData = {
       body: JSON.stringify(clientData),
     });
 
-    // ✅ Get raw response to catch HTML responses
     const rawResponse = await response.text();
-
+    console.log("📥 Raw response from server:", rawResponse);
 
     let data;
     try {
       data = JSON.parse(rawResponse);
     } catch (parseError) {
-      console.error("❌ Response is not valid JSON:", rawResponse);
+      console.error("❌ Response is not valid JSON:", rawResponse, parseError);
       showAlert({
         variant: "error",
         title: "Server Error",
         message: "The server returned an unexpected response. Please check the server.",
       });
-      return { success: false };
+      return { success: false, errors: { server: ["Invalid server response"] } };
     }
 
-    if (response.ok) {
+    // ---------------------------
+    // HANDLE SERVER RESPONSE
+    // ---------------------------
+    if (response.ok && data.success) {
+      console.log("✅ Client added successfully:", data);
       showAlert({
         variant: "success",
         title: "Success",
         message: "Client added successfully",
       });
-      fetchClients();
-      return { success: true };
-    } else if (response.status === 422 && data.errors) {
-      console.error("❌ Validation errors:", data.errors);
-      const errorMessages = Object.entries(data.errors)
+      fetchClients(); // refresh clients list
+      return { success: true, errors: {} };
+    }
+
+    // Backend validation errors (422)
+    if (response.status === 422 && data.errors) {
+      console.error("❌ Backend validation errors:", data.errors);
+      const formattedErrors = {};
+      Object.entries(data.errors).forEach(([field, messages]) => {
+        formattedErrors[field] = Array.isArray(messages) ? messages : [messages];
+      });
+
+      // ✅ Show alert with actual field errors
+      const errorMessage = Object.entries(formattedErrors)
         .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
         .join("\n");
 
       showAlert({
         variant: "error",
         title: "Validation Error",
-        message: errorMessages,
+        message: errorMessage,
       });
 
-      return { success: false, errors: data.errors };
-    } else {
-      showAlert({
-        variant: "error",
-        title: "Error",
-        message: data.message || "An unexpected error occurred.",
-      });
-      return { success: false, errors: {} };
+      return { success: false, errors: formattedErrors };
     }
+
+    // Other backend errors
+    console.error("❌ Backend error:", data);
+    showAlert({
+      variant: "error",
+      title: "Error",
+      message: data.message || "An unexpected error occurred.",
+    });
+    return { success: false, errors: { server: [data.message || "Unknown error"] } };
   } catch (error) {
-    console.error("❌ Error adding client:", error);
+    console.error("❌ Network / Fetch error:", error);
     showAlert({
       variant: "error",
       title: "Error",
       message: "Something went wrong. Please try again.",
     });
-    return { success: false, errors: {} };
+    return { success: false, errors: { network: [error.message] } };
   } finally {
     setIsLoading(false);
   }
 };
+
+
+
+
 
 
 
