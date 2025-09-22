@@ -11,7 +11,7 @@ import {
 import { useAlert } from "../../../context/AlertContext";
 
 export const Clients = () => {
-  const { addClient, isLoading, message } = useClient(); // Assuming addClient is from useClient
+  const { addClient, isLoading, message } = useClient(); 
   const [clientName, setClientName] = useState("");
   const [hiringId, sethiringId] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -29,97 +29,132 @@ export const Clients = () => {
   // State to manage individual input errors (frontend and backend combined)
   const [errors, setErrors] = useState({});
 
-  const validateForm = () => {
-    let newErrors = {};
-    let isValid = true;
+// const validateForm = () => {
+//   let newErrors = {};
+//   let isValid = true;
 
-    // Frontend Validation
-    if (!clienttype) {
-      showAlert({ variant: "error", title: "Error", message: "Please select a client type." });
-      return false; // Stop early if client type is not selected
-    }
+//   // Validate client type
+//   if (!clienttype) {
+//     newErrors.client_type = "Please select a client type.";
+//     isValid = false;
+//   }
 
-    if (clienttype === "Hired on Upwork") {
-      if (!clientName.trim()) { newErrors.name = "Client Name is required."; isValid = false; }
-      if (!hiringId.trim()) { newErrors.hire_on_id = "Hiring ID is required."; isValid = false; }
-    if (!contactEmail.trim()) { newErrors.contact_email = "Contact Email are required."; isValid = false; }
-      if (!contactnumber.trim()) { newErrors.contact_number = "Contact Number are required."; isValid = false; } 
-      if (!communication.trim()) { newErrors.communication = "Communication details are required."; isValid = false; }
-      if (!projectType.trim()) { newErrors.project_type = "Project Type is required."; isValid = false; }
-    } else if (clienttype === "Direct") {
-      if (!clientName.trim()) { newErrors.name = "Client Name is required."; isValid = false; }
-      if (!contactEmail.trim()) { newErrors.contact_email = "Contact Email are required."; isValid = false; }
-      if (!contactnumber.trim()) { newErrors.contact_number = "Contact Number are required."; isValid = false; } 
-      if (!address.trim()) { newErrors.company_address = "Address is required."; isValid = false; }
-      if (!companyname.trim()) { newErrors.company_name = "Company Name is required."; isValid = false; }
-      if (!communication.trim()) { newErrors.communication = "Communication details are required."; isValid = false; }
-      if (!projectType.trim()) { newErrors.project_type = "Project Type is required."; isValid = false; }
-    }
+//   // Email regex (basic check)
+//   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    setErrors(newErrors);
-    return isValid;
-  };
+//   // Phone regex (10 digits only)
+//   const phoneRegex = /^[0-9]{10}$/;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+//   if (clienttype === "Hired on Upwork") {
+//     if (!clientName.trim()) {
+//       newErrors.name = "Client Name is required.";
+//       isValid = false;
+//     }
+//     if (!hiringId.trim()) {
+//       newErrors.hire_on_id = "Hiring ID is required.";
+//       isValid = false;
+//     }
+//     if (!contactEmail.trim()) {
+//       newErrors.contact_email = "Contact Email is required.";
+//       isValid = false;
+//     } else if (!emailRegex.test(contactEmail)) {
+//       newErrors.contact_email = "Invalid Email format.";
+//       isValid = false;
+//     }
+//     if (!contactnumber.trim()) {
+//       newErrors.contact_number = "Contact Number is required.";
+//       isValid = false;
+//     } else if (!phoneRegex.test(contactnumber)) {
+//       newErrors.contact_number = "Contact Number must be 10 digits.";
+//       isValid = false;
+//     }
+//     if (!communication.trim()) {
+//       newErrors.communication = "Communication details are required.";
+//       isValid = false;
+//     }
+//   } else if (clienttype === "Direct") {
+//     if (!clientName.trim()) {
+//       newErrors.name = "Client Name is required.";
+//       isValid = false;
+//     }
+//     if (!contactEmail.trim()) {
+//       newErrors.contact_email = "Contact Email is required.";
+//       isValid = false;
+//     } else if (!emailRegex.test(contactEmail)) {
+//       newErrors.contact_email = "Invalid Email format.";
+//       isValid = false;
+//     }
+//     if (!contactnumber.trim()) {
+//       newErrors.contact_number = "Contact Number is required.";
+//       isValid = false;
+//     } else if (!phoneRegex.test(contactnumber)) {
+//       newErrors.contact_number = "Contact Number must be 10 digits.";
+//       isValid = false;
+//     }
+//     if (!address.trim()) {
+//       newErrors.company_address = "Address is required.";
+//       isValid = false;
+//     }
+//     if (!companyname.trim()) {
+//       newErrors.company_name = "Company Name is required.";
+//       isValid = false;
+//     }
+//     if (!communication.trim()) {
+//       newErrors.communication = "Communication details are required.";
+//       isValid = false;
+//     }
+//   }
 
-    // Clear previous errors before validating
+//   setErrors(newErrors);
+//   return isValid;
+// };
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setShowMessage(false);
+
+  const result = await addClient(
+    clienttype,
+    clientName,
+    hiringId,
+    contactEmail,
+    contactnumber,
+    address,
+    companyname,
+    communication,
+    
+    // projectType
+  );
+
+  if (result.success) {
+    // Reset form on success
+    setClientName("");
+    sethiringId("");
+    setAddress("");
+    setContactEmail("");
+    setContactnumber("");
+    setCompanyname("");
+    setClienttype("");
+    setCommunication("");
+    // setProjectType("");
     setErrors({});
-    setShowMessage(false); // Hide general message
+    setFormType(null);
+  } else if (result.errors) {
+    // Merge backend errors into state
+    setErrors(prev => ({ ...prev, ...result.errors }));
 
-    if (!validateForm()) {
-      return; // Stop submission if frontend validation fails
+    // Only show alert if there are errors
+    if (Object.keys(result.errors).length > 0) {
+      // showAlert({ variant: "error", title: "Submission Error", message: "Please correct the errors below." });
     }
+  } else {
+    // Fallback for unexpected errors
+    // showAlert({ variant: "error", title: "Submission Error", message: "Something went wrong. Please try again." });
+  }
+};
 
-    console.log("Submitting:", {
-      clientName,
-      hiringId,
-      contactEmail,
-      contactnumber,
-      address,
-      companyname,
-      clienttype,
-      communication,
-      projectType,
-    });
 
-    const result = await addClient(
-      clienttype,
-      clientName, // This maps to 'name' on backend
-      hiringId,   // This maps to 'hire_on_id' on backend
-      contactEmail,
-      contactnumber,
-      address,      // This maps to 'company_address' on backend
-      companyname,  // This maps to 'company_name' on backend
-      communication,
-      projectType,
-      
-    );
-
-    if (result.success) {
-      console.log("Client added successfully!");
-      setClientName("");
-      sethiringId("");
-      setAddress("");
-      // setContactDetail("");
-      setContactEmail("");
-      setContactnumber("");
-      setCompanyname("");
-      setClienttype("");
-      setCommunication("");
-      setProjectType("");
-      setErrors({}); // Clear all errors on successful submission
-      setFormType(null); // Close the form
-    } else if (result.errors) {
-      // Backend validation errors received
-      // Merge backend errors into the frontend errors state
-      setErrors(prevErrors => ({ ...prevErrors, ...result.errors }));
-
-      // Optionally, show a general error alert if there are backend errors
-      // You might want to remove this if individual field errors are sufficient
-      showAlert({ variant: "error", title: "Submission Error", message: "Please correct the errors below." });
-    }
-  };
 
   // Helper function to get error message for a field
   const getErrorMessage = (field) => {
@@ -210,10 +245,13 @@ export const Clients = () => {
                 </label>
                 <input
                   id="clientName"
+                  required={true}
                   value={clientName}
                   onChange={(e) => {
                     setClientName(e.target.value);
-                    setErrors({ ...errors, name: null }); // 'name' for backend validation
+                    // setErrors({ ...errors, name: null }); // 'name' for backend validation
+                                                                                                                                setErrors(prevErrors => ({ ...prevErrors, name: null }));
+
                   }}
                   placeholder="Enter Client Name"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
@@ -235,8 +273,9 @@ export const Clients = () => {
                   Contact Email
                 </label>
                 <input
-                typeof="email"
+                type="email"
                   id="contactEmail"
+                          required={true}
                   value={contactEmail}
                   onChange={(e) => {
                     setContactEmail(e.target.value);
@@ -262,13 +301,16 @@ export const Clients = () => {
                   Contact Number
                 </label>
                 <input
-                type="number"
+             type="text" 
                 maxLength={10}
+                        required={true}
                   id="contactnumber"
                   value={contactnumber}
                   onChange={(e) => {
                     setContactnumber(e.target.value);
-                    setErrors({ ...errors, contact_number: null }); // 'contact_detail' for backend
+                    // setErrors({ ...errors, contact_number: null }); // 'contact_detail' for backend
+                    setErrors(prevErrors => ({ ...prevErrors, contact_number: null }));
+
                   }}
                   placeholder="Enter Contact Number"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
@@ -293,9 +335,12 @@ export const Clients = () => {
                 <input
                   id="hiringId"
                   value={hiringId}
+                          required={true}
                   onChange={(e) => {
                     sethiringId(e.target.value);
-                    setErrors({ ...errors, hire_on_id: null }); // 'hire_on_id' for backend
+                    // setErrors({ ...errors, hire_on_id: null }); // 'hire_on_id' for backend
+                                        setErrors(prevErrors => ({ ...prevErrors, hire_on_id: null }));
+
                   }}
                   placeholder="Enter Hiring Id"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
@@ -347,6 +392,7 @@ export const Clients = () => {
                 <input
                   id="communication"
                   type="text"
+                          required={true}
                   value={communication}
                   onChange={(e) => {
                     setCommunication(e.target.value);
@@ -392,9 +438,12 @@ export const Clients = () => {
                 </label>
                 <input
                   value={clientName}
+                          required={true}
                   onChange={(e) => {
                     setClientName(e.target.value);
-                    setErrors({ ...errors, name: null });
+                    // setErrors({ ...errors, name: null });
+                                                            setErrors(prevErrors => ({ ...prevErrors, name: null }));
+
                   }}
                   placeholder="Enter Client Name"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
@@ -415,9 +464,12 @@ export const Clients = () => {
                 <input
                 typeof="email"
                   value={contactEmail}
+                          required={true}
                   onChange={(e) => {
                     setContactEmail(e.target.value);
-                    setErrors({ ...errors, contact_email :null });
+                    // setErrors({ ...errors, contact_email :null });
+                                                                                setErrors(prevErrors => ({ ...prevErrors, contact_email: null }));
+
                   }}
                   placeholder="Enter Contact Email"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
@@ -438,10 +490,13 @@ export const Clients = () => {
                 <input
                 type="number"
                 maxLength={10}
+                        required={true}
                   value={contactnumber}
                   onChange={(e) => {
                     setContactnumber(e.target.value);
-                    setErrors({ ...errors, contact_number: null });
+                    // setErrors({ ...errors, contact_number: null });
+                                                                                                    setErrors(prevErrors => ({ ...prevErrors, contact_number: null }));
+
                   }}
                   placeholder="Enter Contact Number"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
@@ -463,9 +518,10 @@ export const Clients = () => {
                 </label>
                 <input
                   value={companyname}
+                          required={true}
                   onChange={(e) => {
                     setCompanyname(e.target.value);
-                    setErrors({ ...errors, company_name: null });
+  setErrors(prevErrors => ({ ...prevErrors, company_name: null }));
                   }}
                   placeholder="Enter Company Name"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
@@ -485,9 +541,10 @@ export const Clients = () => {
                 </label>
                 <input
                   value={address}
+                          required={true}
                   onChange={(e) => {
                     setAddress(e.target.value);
-                    setErrors({ ...errors, company_address: null });
+  setErrors(prevErrors => ({ ...prevErrors, company_address: null }));
                   }}
                   placeholder="Enter Address"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
@@ -540,10 +597,11 @@ export const Clients = () => {
                 <input
                   id="directCommunication"
                   type="text"
+                          required={true}
                   value={communication}
                   onChange={(e) => {
                     setCommunication(e.target.value);
-                    setErrors({ ...errors, communication: null });
+  setErrors(prevErrors => ({ ...prevErrors, communication: null }));
                   }}
                   placeholder="e.g., Email, Slack, Microsoft Teams"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
