@@ -75,19 +75,11 @@ console.log("Adding employee with data:", employeeData);
       }
     }
 
-    const images = employeeData.profile_pics || [];
-    if (images.length > 1) {
-      showAlert({
-        variant: "error",
-        title: "Upload Error",
-        message: "You can upload a maximum of 1 image.",
-      });
-      return false;
-    }
+if (employeeData.profile_pic instanceof File) {
+  formData.append("profile_pic", employeeData.profile_pic);
+}
 
-    if (images.length === 1 && images[0] instanceof File) {
-      formData.append("profile_pic", images[0]);
-    }
+
 console.log("FormData entries before submission:",formData);
     const response = await fetch(`${API_URL}/api/users`, {
       method: "POST",
@@ -145,9 +137,9 @@ console.log("FormData entries before submission:",formData);
       formData.append("phone_num", updatedData.phone_num || "");
       formData.append("emergency_phone_num", updatedData.emergency_phone_num || "");
       formData.append("address", updatedData.address || "");
-      formData.append("team_id", updatedData.team_id || ""); // Ensure empty string for null/undefined
-      formData.append("role_id", updatedData.role_id || ""); // Ensure empty string for null/undefined
-      formData.append("pm_id", updatedData.pm_id || ""); // Ensure empty string for null/undefined
+      formData.append("team_id", updatedData.team_id || ""); 
+      formData.append("role_id", updatedData.role_id || ""); 
+      formData.append("pm_id", updatedData.pm_id || ""); 
       formData.append('_method', 'PUT');
 
       if (updatedData.profile_pic instanceof File) {
