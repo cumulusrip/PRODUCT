@@ -11,11 +11,11 @@ import {
 import { useAlert } from "../../../context/AlertContext";
 
 export const Clients = () => {
-  const { addClient, isLoading, message } = useClient(); 
+  const { addClient, isLoading, message } = useClient();
   const [clientName, setClientName] = useState("");
   const [hiringId, sethiringId] = useState("");
   const [contactEmail, setContactEmail] = useState("");
-    const [contactnumber, setContactnumber] = useState("");
+  const [contactnumber, setContactnumber] = useState("");
   const [clienttype, setClienttype] = useState("");
   const [companyname, setCompanyname] = useState("");
   const [address, setAddress] = useState("");
@@ -29,132 +29,129 @@ export const Clients = () => {
   // State to manage individual input errors (frontend and backend combined)
   const [errors, setErrors] = useState({});
 
-// const validateForm = () => {
-//   let newErrors = {};
-//   let isValid = true;
+  // const validateForm = () => {
+  //   let newErrors = {};
+  //   let isValid = true;
 
-//   // Validate client type
-//   if (!clienttype) {
-//     newErrors.client_type = "Please select a client type.";
-//     isValid = false;
-//   }
+  //   // Validate client type
+  //   if (!clienttype) {
+  //     newErrors.client_type = "Please select a client type.";
+  //     isValid = false;
+  //   }
 
-//   // Email regex (basic check)
-//   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   // Email regex (basic check)
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-//   // Phone regex (10 digits only)
-//   const phoneRegex = /^[0-9]{10}$/;
+  //   // Phone regex (10 digits only)
+  //   const phoneRegex = /^[0-9]{10}$/;
 
-//   if (clienttype === "Hired on Upwork") {
-//     if (!clientName.trim()) {
-//       newErrors.name = "Client Name is required.";
-//       isValid = false;
-//     }
-//     if (!hiringId.trim()) {
-//       newErrors.hire_on_id = "Hiring ID is required.";
-//       isValid = false;
-//     }
-//     if (!contactEmail.trim()) {
-//       newErrors.contact_email = "Contact Email is required.";
-//       isValid = false;
-//     } else if (!emailRegex.test(contactEmail)) {
-//       newErrors.contact_email = "Invalid Email format.";
-//       isValid = false;
-//     }
-//     if (!contactnumber.trim()) {
-//       newErrors.contact_number = "Contact Number is required.";
-//       isValid = false;
-//     } else if (!phoneRegex.test(contactnumber)) {
-//       newErrors.contact_number = "Contact Number must be 10 digits.";
-//       isValid = false;
-//     }
-//     if (!communication.trim()) {
-//       newErrors.communication = "Communication details are required.";
-//       isValid = false;
-//     }
-//   } else if (clienttype === "Direct") {
-//     if (!clientName.trim()) {
-//       newErrors.name = "Client Name is required.";
-//       isValid = false;
-//     }
-//     if (!contactEmail.trim()) {
-//       newErrors.contact_email = "Contact Email is required.";
-//       isValid = false;
-//     } else if (!emailRegex.test(contactEmail)) {
-//       newErrors.contact_email = "Invalid Email format.";
-//       isValid = false;
-//     }
-//     if (!contactnumber.trim()) {
-//       newErrors.contact_number = "Contact Number is required.";
-//       isValid = false;
-//     } else if (!phoneRegex.test(contactnumber)) {
-//       newErrors.contact_number = "Contact Number must be 10 digits.";
-//       isValid = false;
-//     }
-//     if (!address.trim()) {
-//       newErrors.company_address = "Address is required.";
-//       isValid = false;
-//     }
-//     if (!companyname.trim()) {
-//       newErrors.company_name = "Company Name is required.";
-//       isValid = false;
-//     }
-//     if (!communication.trim()) {
-//       newErrors.communication = "Communication details are required.";
-//       isValid = false;
-//     }
-//   }
+  //   if (clienttype === "Hired on Upwork") {
+  //     if (!clientName.trim()) {
+  //       newErrors.name = "Client Name is required.";
+  //       isValid = false;
+  //     }
+  //     if (!hiringId.trim()) {
+  //       newErrors.hire_on_id = "Hiring ID is required.";
+  //       isValid = false;
+  //     }
+  //     if (!contactEmail.trim()) {
+  //       newErrors.contact_email = "Contact Email is required.";
+  //       isValid = false;
+  //     } else if (!emailRegex.test(contactEmail)) {
+  //       newErrors.contact_email = "Invalid Email format.";
+  //       isValid = false;
+  //     }
+  //     if (!contactnumber.trim()) {
+  //       newErrors.contact_number = "Contact Number is required.";
+  //       isValid = false;
+  //     } else if (!phoneRegex.test(contactnumber)) {
+  //       newErrors.contact_number = "Contact Number must be 10 digits.";
+  //       isValid = false;
+  //     }
+  //     if (!communication.trim()) {
+  //       newErrors.communication = "Communication details are required.";
+  //       isValid = false;
+  //     }
+  //   } else if (clienttype === "Direct") {
+  //     if (!clientName.trim()) {
+  //       newErrors.name = "Client Name is required.";
+  //       isValid = false;
+  //     }
+  //     if (!contactEmail.trim()) {
+  //       newErrors.contact_email = "Contact Email is required.";
+  //       isValid = false;
+  //     } else if (!emailRegex.test(contactEmail)) {
+  //       newErrors.contact_email = "Invalid Email format.";
+  //       isValid = false;
+  //     }
+  //     if (!contactnumber.trim()) {
+  //       newErrors.contact_number = "Contact Number is required.";
+  //       isValid = false;
+  //     } else if (!phoneRegex.test(contactnumber)) {
+  //       newErrors.contact_number = "Contact Number must be 10 digits.";
+  //       isValid = false;
+  //     }
+  //     if (!address.trim()) {
+  //       newErrors.company_address = "Address is required.";
+  //       isValid = false;
+  //     }
+  //     if (!companyname.trim()) {
+  //       newErrors.company_name = "Company Name is required.";
+  //       isValid = false;
+  //     }
+  //     if (!communication.trim()) {
+  //       newErrors.communication = "Communication details are required.";
+  //       isValid = false;
+  //     }
+  //   }
 
-//   setErrors(newErrors);
-//   return isValid;
-// };
+  //   setErrors(newErrors);
+  //   return isValid;
+  // };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setShowMessage(false);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setShowMessage(false);
+    const result = await addClient(
+      clienttype,
+      clientName,
+      hiringId,
+      contactEmail,
+      contactnumber,
+      address,
+      companyname,
+      communication
 
-  const result = await addClient(
-    clienttype,
-    clientName,
-    hiringId,
-    contactEmail,
-    contactnumber,
-    address,
-    companyname,
-    communication,
-    
-    // projectType
-  );
+      // projectType
+    );
 
-  if (result.success) {
-    // Reset form on success
-    setClientName("");
-    sethiringId("");
-    setAddress("");
-    setContactEmail("");
-    setContactnumber("");
-    setCompanyname("");
-    setClienttype("");
-    setCommunication("");
-    // setProjectType("");
-    setErrors({});
-    setFormType(null);
-  } else if (result.errors) {
-    // Merge backend errors into state
-    setErrors(prev => ({ ...prev, ...result.errors }));
+    if (result.success) {
+      // Reset form on success
+      setClientName("");
+      sethiringId("");
+      setAddress("");
+      setContactEmail("");
+      setContactnumber("");
+      setCompanyname("");
+      setClienttype("");
+      setCommunication("");
+      // setProjectType("");
+      setErrors({});
+      setFormType(null);
+    } else if (result.errors) {
+      // Merge backend errors into state
+      setErrors((prev) => ({ ...prev, ...result.errors }));
 
-    // Only show alert if there are errors
-    if (Object.keys(result.errors).length > 0) {
-      // showAlert({ variant: "error", title: "Submission Error", message: "Please correct the errors below." });
+      // Only show alert if there are errors
+      if (Object.keys(result.errors).length > 0) {
+        // showAlert({ variant: "error", title: "Submission Error", message: "Please correct the errors below." });
+      }
+    } else {
+      // Fallback for unexpected errors
+      // showAlert({ variant: "error", title: "Submission Error", message: "Something went wrong. Please try again." });
     }
-  } else {
-    // Fallback for unexpected errors
-    // showAlert({ variant: "error", title: "Submission Error", message: "Something went wrong. Please try again." });
-  }
-};
-
-
+  };
 
   // Helper function to get error message for a field
   const getErrorMessage = (field) => {
@@ -163,7 +160,6 @@ const handleSubmit = async (e) => {
     }
     return errors[field]; // For simple string errors or frontend errors
   };
-
 
   return (
     <div className="">
@@ -224,10 +220,15 @@ const handleSubmit = async (e) => {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg md:max-w-lg">
             <div className="flex justify-between">
-              <h3 className="text-lg font-semibold mb-6">
-                Upwork Hiring Form
-              </h3>
-              <button className="font-bold" onClick={() => { setFormType(null); setErrors({}); setShowMessage(false); }}>
+              <h3 className="text-lg font-semibold mb-6">Upwork Hiring Form</h3>
+              <button
+                className="font-bold"
+                onClick={() => {
+                  setFormType(null);
+                  setErrors({});
+                  setShowMessage(false);
+                }}
+              >
                 X
               </button>
             </div>
@@ -250,17 +251,18 @@ const handleSubmit = async (e) => {
                   onChange={(e) => {
                     setClientName(e.target.value);
                     // setErrors({ ...errors, name: null }); // 'name' for backend validation
-                                                                                                                                setErrors(prevErrors => ({ ...prevErrors, name: null }));
-
+                    setErrors((prevErrors) => ({ ...prevErrors, name: null }));
                   }}
                   placeholder="Enter Client Name"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('name') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("name")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('name') && (
+                {getErrorMessage("name") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('name')}
+                    {getErrorMessage("name")}
                   </p>
                 )}
               </div>
@@ -273,9 +275,9 @@ const handleSubmit = async (e) => {
                   Contact Email
                 </label>
                 <input
-                type="email"
+                  type="email"
                   id="contactEmail"
-                          required={true}
+                  required={true}
                   value={contactEmail}
                   onChange={(e) => {
                     setContactEmail(e.target.value);
@@ -283,17 +285,19 @@ const handleSubmit = async (e) => {
                   }}
                   placeholder="Enter Contact E-mail"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('contact_email') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("contact_email")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('contact_email') && (
+                {getErrorMessage("contact_email") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('contact_email')}
+                    {getErrorMessage("contact_email")}
                   </p>
                 )}
               </div>
 
-   <div>
+              <div>
                 <label
                   htmlFor="contactnumber"
                   className="block font-medium text-gray-700 text-sm"
@@ -301,29 +305,32 @@ const handleSubmit = async (e) => {
                   Contact Number
                 </label>
                 <input
-             type="text" 
-                maxLength={10}
-                        required={true}
+                  type="text"
+                  maxLength={10}
+                  required={true}
                   id="contactnumber"
                   value={contactnumber}
                   onChange={(e) => {
                     setContactnumber(e.target.value);
                     // setErrors({ ...errors, contact_number: null }); // 'contact_detail' for backend
-                    setErrors(prevErrors => ({ ...prevErrors, contact_number: null }));
-
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      contact_number: null,
+                    }));
                   }}
                   placeholder="Enter Contact Number"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('contact_number') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("contact_number")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('contact_number') && (
+                {getErrorMessage("contact_number") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('contact_number')}
+                    {getErrorMessage("contact_number")}
                   </p>
                 )}
               </div>
-
 
               <div>
                 <label
@@ -335,21 +342,25 @@ const handleSubmit = async (e) => {
                 <input
                   id="hiringId"
                   value={hiringId}
-                          required={true}
+                  required={true}
                   onChange={(e) => {
                     sethiringId(e.target.value);
                     // setErrors({ ...errors, hire_on_id: null }); // 'hire_on_id' for backend
-                                        setErrors(prevErrors => ({ ...prevErrors, hire_on_id: null }));
-
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      hire_on_id: null,
+                    }));
                   }}
                   placeholder="Enter Hiring Id"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('hire_on_id') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("hire_on_id")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('hire_on_id') && (
+                {getErrorMessage("hire_on_id") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('hire_on_id')}
+                    {getErrorMessage("hire_on_id")}
                   </p>
                 )}
               </div>
@@ -392,7 +403,7 @@ const handleSubmit = async (e) => {
                 <input
                   id="communication"
                   type="text"
-                          required={true}
+                  required={true}
                   value={communication}
                   onChange={(e) => {
                     setCommunication(e.target.value);
@@ -400,12 +411,14 @@ const handleSubmit = async (e) => {
                   }}
                   placeholder="e.g., Email, Upwork Chat, Phone"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('communication') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("communication")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('communication') && (
+                {getErrorMessage("communication") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('communication')}
+                    {getErrorMessage("communication")}
                   </p>
                 )}
               </div>
@@ -423,7 +436,14 @@ const handleSubmit = async (e) => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-xl md:max-w-xl">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold mb-6">Direct Hiring Form</h3>
-              <button className="font-bold" onClick={() => { setFormType(null); setErrors({}); setShowMessage(false); }} >
+              <button
+                className="font-bold"
+                onClick={() => {
+                  setFormType(null);
+                  setErrors({});
+                  setShowMessage(false);
+                }}
+              >
                 X
               </button>
             </div>
@@ -438,21 +458,21 @@ const handleSubmit = async (e) => {
                 </label>
                 <input
                   value={clientName}
-                          required={true}
+                  required={true}
                   onChange={(e) => {
                     setClientName(e.target.value);
-                    // setErrors({ ...errors, name: null });
-                                                            setErrors(prevErrors => ({ ...prevErrors, name: null }));
-
+                    setErrors((prevErrors) => ({ ...prevErrors, name: null }));
                   }}
                   placeholder="Enter Client Name"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('name') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("name")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('name') && (
+                {getErrorMessage("name") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('name')}
+                    {getErrorMessage("name")}
                   </p>
                 )}
               </div>
@@ -462,54 +482,70 @@ const handleSubmit = async (e) => {
                   Contact E-mail
                 </label>
                 <input
-                typeof="email"
+                  typeof="email"
                   value={contactEmail}
-                          required={true}
+                  required={true}
                   onChange={(e) => {
                     setContactEmail(e.target.value);
-                    // setErrors({ ...errors, contact_email :null });
-                                                                                setErrors(prevErrors => ({ ...prevErrors, contact_email: null }));
-
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      contact_email: null,
+                    }));
                   }}
                   placeholder="Enter Contact Email"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('contact_email') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("contact_email")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('contact_email') && (
+                {getErrorMessage("contact_email") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('contact_email')}
+                    {getErrorMessage("contact_email")}
                   </p>
                 )}
               </div>
 
-  <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Contact Number
-                </label>
-                <input
-                type="number"
-                maxLength={10}
-                        required={true}
-                  value={contactnumber}
-                  onChange={(e) => {
-                    setContactnumber(e.target.value);
-                    // setErrors({ ...errors, contact_number: null });
-                                                                                                    setErrors(prevErrors => ({ ...prevErrors, contact_number: null }));
-
-                  }}
-                  placeholder="Enter Contact Number"
-                  className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('contact_number') ? "border-red-500" : "border-gray-300"
-                  }`}
-                />
-                {getErrorMessage('contact_number') && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('contact_number')}
-                  </p>
-                )}
-              </div>
-
+            <div>
+  <label className="block text-sm font-medium text-gray-700">
+    Contact Number
+  </label>
+  <input
+    type="text" 
+    maxLength={10}
+    required={true}
+    value={contactnumber}
+    onChange={(e) => {
+      const value = e.target.value;
+      if (/^\d{0,10}$/.test(value)) {
+        setContactnumber(value);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          contact_number: null,
+        }));
+      }
+    }}
+    onBlur={() => {
+      if (contactnumber.length !== 10) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          contact_number: "Contact number must be 10 digits",
+        }));
+      }
+    }}
+    placeholder="Enter Contact Number"
+    className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+      getErrorMessage("contact_number")
+        ? "border-red-500"
+        : "border-gray-300"
+    }`}
+  />
+  {getErrorMessage("contact_number") && (
+    <p className="text-red-500 text-xs mt-1">
+      {getErrorMessage("contact_number")}
+    </p>
+  )}
+</div>
 
 
               <div>
@@ -518,19 +554,24 @@ const handleSubmit = async (e) => {
                 </label>
                 <input
                   value={companyname}
-                          required={true}
+                  required={true}
                   onChange={(e) => {
                     setCompanyname(e.target.value);
-  setErrors(prevErrors => ({ ...prevErrors, company_name: null }));
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      company_name: null,
+                    }));
                   }}
                   placeholder="Enter Company Name"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('company_name') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("company_name")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('company_name') && (
+                {getErrorMessage("company_name") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('company_name')}
+                    {getErrorMessage("company_name")}
                   </p>
                 )}
               </div>
@@ -541,19 +582,24 @@ const handleSubmit = async (e) => {
                 </label>
                 <input
                   value={address}
-                          required={true}
+                  required={true}
                   onChange={(e) => {
                     setAddress(e.target.value);
-  setErrors(prevErrors => ({ ...prevErrors, company_address: null }));
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      company_address: null,
+                    }));
                   }}
                   placeholder="Enter Address"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('company_address') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("company_address")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('company_address') && (
+                {getErrorMessage("company_address") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('company_address')}
+                    {getErrorMessage("company_address")}
                   </p>
                 )}
               </div>
@@ -597,20 +643,25 @@ const handleSubmit = async (e) => {
                 <input
                   id="directCommunication"
                   type="text"
-                          required={true}
+                  required={true}
                   value={communication}
                   onChange={(e) => {
                     setCommunication(e.target.value);
-  setErrors(prevErrors => ({ ...prevErrors, communication: null }));
+                    setErrors((prevErrors) => ({
+                      ...prevErrors,
+                      communication: null,
+                    }));
                   }}
                   placeholder="e.g., Email, Slack, Microsoft Teams"
                   className={`w-full p-2 mt-1 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                    getErrorMessage('communication') ? "border-red-500" : "border-gray-300"
+                    getErrorMessage("communication")
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {getErrorMessage('communication') && (
+                {getErrorMessage("communication") && (
                   <p className="text-red-500 text-xs mt-1">
-                    {getErrorMessage('communication')}
+                    {getErrorMessage("communication")}
                   </p>
                 )}
               </div>
