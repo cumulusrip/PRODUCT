@@ -18,6 +18,17 @@ export const Projects = () => {
   const { showAlert } = useAlert();
   const [projectType, setProjectType] = useState("");
   const [errors, setErrors] = useState({});
+
+
+  useEffect(() => {
+  if (activityTags && activityTags.length > 0) {
+    const billableTag = activityTags.find((tag) => tag.name === "Billable");
+    if (billableTag && !selectedTags.includes(billableTag.id)) {
+      setSelectedTags([billableTag.id]); 
+    }
+  }
+}, [activityTags]);
+
    useEffect(() => {
       // Fetch activity tags on component mount
       getActivityTags();
