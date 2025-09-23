@@ -103,7 +103,7 @@ export const LeaveManagement = () => {
         }
 
         setFilteredData(currentFilteredData);
-        setCurrentPage(1); // Reset to first page whenever filters change
+        setCurrentPage(1); 
     }, [searchTerm, filterStatus, hrLeave]);
 
     useEffect(() => {
@@ -111,7 +111,7 @@ export const LeaveManagement = () => {
     }, [applyFilters]);
 
     const handleStatusChange = async (id, newStatus) => {
-        const updatedStatus = [{ id, status: newStatus }];
+        const updatedStatus = { id, status: newStatus };
         await postStatuses(updatedStatus);
         setEditMode((prev) => ({ ...prev, [id]: false }));
     };
@@ -120,10 +120,9 @@ export const LeaveManagement = () => {
         setEditMode((prev) => ({ ...prev, [id]: !prev[id] }));
     };
 
-    // Calculate total pages based on filtered data and leavesPerPage
+
     const totalPages = leavesPerPage === 'all' ? 1 : Math.ceil(filteredData.length / leavesPerPage);
 
-    // Apply pagination to filtered data
     const paginatedLeaveRequests = leavesPerPage === 'all'
         ? filteredData
         : filteredData.slice(
