@@ -13,10 +13,11 @@ import { SectionHeader } from '../../../components/SectionHeader';
 import { exportToExcel, importFromExcel, useImportEmployees, fetchGoogleSheetData } from "../../../components/excelUtils";
 import { CancelButton, ExportButton, SaveChangeButton, ImportButton, ClearButton, IconDeleteButton, IconEditButton, IconViewButton } from "../../../AllButtons/AllButtons";
 import { useNavigate } from 'react-router-dom';
+// import { useTLContext } from "../../../context/TLContext";
 import Pagination from "../../../components/Pagination";
 const EmployeeManagement = () => {
   const navigate = useNavigate();
-  const { employees, loading, addEmployee, deleteEmployee, updateEmployee, error: contextError } = useEmployees(); 
+  const { employees, loading,fetchTl ,tl, addEmployee, deleteEmployee, updateEmployee, error: contextError ,setTl} = useEmployees(); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [editingEmployee, setEditingEmployee] = useState(null);
@@ -40,6 +41,9 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
   } = useImport();
 
 
+//   useEffect(() => { 
+// fetchTl();
+//   }, []);
 
 
   const [validationErrors, setValidationErrors] = useState({});
@@ -84,7 +88,7 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
     team_id: "",
     role_id: "",
     profile_pic: null,
-    pm_id: 1, 
+    tl_id: "", 
     employee_id: "",
   });
 
@@ -106,7 +110,7 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
       ...employee,
       team_id: employee.team_id || null, 
       role_id: employee.role_id || null,
-      pm_id: employee.pm_id || 1, 
+      tl_id: employee.tl_id || null, 
     });
 
     setValidationErrors({});
@@ -191,8 +195,8 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
         phone_num: !newEmployee.phone_num ? ["The phone number field is required."] : prev.phone_num,
         role_id: !newEmployee.role_id ? ["The role field is required."] : prev.role_id,
 
-
-        team_id: !newEmployee.role_id ? ["Please select the Department."] : prev.team_id,
+   tl_id: !newEmployee.tl_id ? ["Please select the Department."] : prev.tl_id,
+        team_id: !newEmployee.team_id ? ["Please select the Department."] : prev.team_id,
         emergency_phone_num: !newEmployee.role_id ? ["Emergency phone nmumber is required."] : prev.emergency_phone_num,
          employee_id: !newEmployee.employee_id ? ["Employee ID is required."] : prev.employee_id,
         // role_id: !newEmployee.role_id ? ["The role field is required."] : prev.role_id,
@@ -214,7 +218,7 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
         team_id: "",
         role_id: "",
         profile_pic: null,
-        pm_id: 1, 
+        tl_id: "", 
         employee_id: "",
       });
       setValidationErrors({}); // Clear errors on successful submission
@@ -224,7 +228,7 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
       let generalErrorMessage = "Something went wrong while adding the employee.";
       let backendErrors = {};
 
-      if (err.message) { // err.message now contains the stringified JSON from context
+      if (err.message) { 
         try {
           const parsedError = JSON.parse(err.message);
           if (parsedError.errors) {
@@ -267,7 +271,7 @@ const [employeeToDelete, setEmployeeToDelete] = useState(null);
       team_id: "",
       role_id: "",
       profile_pic: null,
-      pm_id: 1,
+      tl_id: "",
       employee_id:"",
     });
   };
@@ -314,6 +318,18 @@ const handleSubmit = async () => {
       // error handled by context's showAlert already
     }
   };
+
+
+const rolesWithoutTeamLead = [
+  "Super Admin",
+  "Admin",
+  "HR",
+  "Billing Manager",
+  "Project Manager",
+  "TL"
+];
+
+const showTeamLeadDropdown = !rolesWithoutTeamLead.includes(newEmployee.role_name);
 
 
   return (
@@ -994,28 +1010,46 @@ const handleSubmit = async () => {
                     </p>
                   )}
                 </div>
-                    <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Employee ID <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    id="name"
-                    type="text"
-                    placeholder="e.g., TAS-123"
-                    name="employee_id"
-                    value={newEmployee.employee_id}
-                    onChange={handleInputChange}
-                    className="w-full p-3 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-200 ease-in-out"
-                  />
-                  {validationErrors.employee_id && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {validationErrors.employee_id[0]}
-                    </p>
-                  )}
-                </div>
+                 <div>
+  <label
+    htmlFor="employee_id"
+    className="block text-sm font-medium text-gray-700 mb-1"
+  >
+    Employee ID <span className="text-red-500">*</span>
+  </label>
+
+  <div className="flex">
+
+    <span className="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-gray-300 bg-gray-100 text-gray-600 text-sm">
+      TAS-
+    </span>
+
+
+    <input
+      id="employee_id"
+      type="text"
+      placeholder="123"
+      name="employee_id"
+      value={newEmployee.employee_id.replace(/^TAS-/, "")} // strip TAS- for editing
+      onChange={(e) =>
+        handleInputChange({
+          target: {
+            name: "employee_id",
+            value: "TAS-" + e.target.value.replace(/\D/g, ""), // always add TAS-
+          },
+        })
+      }
+      className="w-full p-3 border border-gray-300 rounded-r-xl focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-200 ease-in-out"
+    />
+  </div>
+
+  {validationErrors.employee_id && (
+    <p className="text-red-500 text-xs mt-1">
+      {validationErrors.employee_id[0]}
+    </p>
+  )}
+</div>
+
                 <div>
                   <label
                     htmlFor="email"
@@ -1039,11 +1073,7 @@ const handleSubmit = async () => {
                     </p>
                   )}
                 </div>
-              </div>
-
-              {/* Password and Phone Number - Half-half layout on larger screens */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div className="relative">
+                          <div className="relative">
       <label
         htmlFor="password"
         className="block text-sm font-medium text-gray-700 mb-1"
@@ -1075,6 +1105,11 @@ const handleSubmit = async () => {
         </p>
       )}
     </div>
+              </div>
+
+              {/* Password and Phone Number - Half-half layout on larger screens */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+    
                 <div>
                   <label
                     htmlFor="phone_num"
@@ -1107,11 +1142,7 @@ const handleSubmit = async () => {
                     </p>
                   )}
                 </div>
-              </div>
-
-              {/* Emergency Contact and Address - Half-half layout on larger screens */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
+                 <div>
                   <label
                     htmlFor="emergency_phone_num"
                     className="block text-sm font-medium text-gray-700 mb-1"
@@ -1147,6 +1178,11 @@ const handleSubmit = async () => {
                     </p>
                   )}
                 </div>
+              </div>
+
+              {/* Emergency Contact and Address - Half-half layout on larger screens */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+               
                 <div>
                   <label
                     htmlFor="address"
@@ -1169,12 +1205,7 @@ const handleSubmit = async () => {
                     </p>
                   )}
                 </div>
-              </div>
-
-              {/* Team and Role - Half-half layout on larger screens */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              
-                <div>
+                         <div>
                   <label
                     htmlFor="role_id"
                     className="block text-sm font-medium text-gray-700 mb-1"
@@ -1202,7 +1233,14 @@ const handleSubmit = async () => {
                     </p>
                   )}
                 </div>
+              </div>
+
+              {/* Team and Role - Half-half layout on larger screens */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              
+       
                 {!["1", "2", "3", "4"].includes(newEmployee.role_id) && (
+              
   <div>
     <label
       htmlFor="team_id"
@@ -1214,12 +1252,18 @@ const handleSubmit = async () => {
       id="team_id"
       name="team_id"
       value={newEmployee.team_id ?? ""}
-      onChange={(e) =>
-        setNewEmployee({
-          ...newEmployee,
-          team_id: e.target.value === "" ? null : e.target.value,
-        })
+     onChange={(e) => {
+      const selectedTeamId = e.target.value === "" ? null : e.target.value;
+      setNewEmployee({
+        ...newEmployee,
+        team_id: selectedTeamId,
+      });
+
+      if (selectedTeamId) {
+        console.log("Fetching TL for team_id:", selectedTeamId);
+        fetchTl(selectedTeamId); 
       }
+    }}
       className="w-full p-3 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm appearance-none pr-8 transition-all duration-200 ease-in-out"
     >
       <option value="">-- Select Department --</option>
@@ -1236,6 +1280,56 @@ const handleSubmit = async () => {
     )}
   </div>
 )}
+
+
+          {!["1", "2", "3", "4","5","6"].includes(newEmployee.role_id) && (
+
+  <div>
+    <label
+      htmlFor="team_id"
+      className="block text-sm font-medium text-gray-700 mb-1"
+    >
+      Select Team Lead
+<select
+  id="tl_id"
+  name="tl_id"
+  value={newEmployee.tl_id ?? ""}
+  onChange={(e) => {
+    const selectedTeamId = e.target.value || null;
+
+    setNewEmployee({
+      ...newEmployee,
+      tl_id: selectedTeamId,
+    });
+
+    if (!selectedTeamId) {
+
+      setTl([]);
+    } else {
+      console.log("Fetching TL for tl_id:", selectedTeamId);
+      fetchTl(selectedTeamId);
+    }
+  }}
+  className="w-full p-3 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm appearance-none pr-8 transition-all duration-200 ease-in-out"
+>
+  <option value="">-- Select Team Lead --</option>
+  {tl.length > 0 ? (
+    tl.map((team) => (
+      <option key={team.id} value={team.id}>
+        {team.name}
+      </option>
+    ))
+  ) : (
+    <option disabled>No TL available</option>
+  )}
+</select>
+</label>
+
+</div>
+          )}
+
+  
+
 
 
               </div>
