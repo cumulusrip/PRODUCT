@@ -2,16 +2,20 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { API_URL } from "../utils/ApiConfig";
 import Alert from "../components/Alerts";
 import { useAlert } from "./AlertContext";
+import axios from "axios";
 
 const EmployeeContext = createContext(undefined);
 
 export const EmployeeProvider = ({ children }) => {
+    const [tl, setTl] = useState([]); // <-- this must be in the same component
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); 
   const { showAlert } = useAlert();
 
+// const setTl;
   const fetchEmployees = async () => {
+    console.log("Fetching employees...");
     try {
       const token = localStorage.getItem("userToken");
       if (!token) {
@@ -45,6 +49,35 @@ export const EmployeeProvider = ({ children }) => {
     fetchEmployees();
   }, []);
 
+
+const fetchTl = async (team_id) => {
+  console.log("Fetching TL data for team_id:", team_id);
+
+  const token = localStorage.getItem("userToken");
+
+  try {
+    const response = await axios.get(`${API_URL}/api/getalltl`, {
+      params: { team_id },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("TL fetch response:", response.data.data);
+    setTl(response.data.data); 
+  } catch (error) {
+    console.error("Error fetching TL data:", error.response?.data || error);
+    setTl([]); 
+  }
+};
+
+
+
+
+
+
+
 const addEmployee = async (employeeData) => {
   try {
     const token = localStorage.getItem("userToken");
@@ -57,7 +90,7 @@ console.log("Adding employee with data:", employeeData);
     formData.append("address", employeeData.address || "");
     formData.append("phone_num", employeeData.phone_num || "");
     formData.append("emergency_phone_num", employeeData.emergency_phone_num || "");
-    formData.append("pm_id", employeeData.pm_id || "1");
+    formData.append("tl_id", employeeData.tl_id || "");
 
     if (employeeData.role_id) {
       formData.append("role_id", employeeData.role_id);
@@ -228,7 +261,7 @@ return true;
 
   
   return (
-    <EmployeeContext.Provider value={{ employees, loading, error, fetchEmployees, addEmployee, updateEmployee, deleteEmployee }}>
+    <EmployeeContext.Provider value={{ employees,tl,fetchTl,setTl ,loading, error, fetchEmployees, addEmployee, updateEmployee, deleteEmployee }}>
       {children}
     </EmployeeContext.Provider>
   );
